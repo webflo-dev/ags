@@ -1,0 +1,16 @@
+window {
+  background: transparent; }
+
+label {
+  font-family: "system-ui";
+  font-size: 16px;
+  color: #d8e2e1; }
+
+button {
+  all: unset; }
+
+.icon {
+  font-family: "Font Awesome 6 Pro Regular"; }
+
+.monospace {
+  font-family: "monospace"; }

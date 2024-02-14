@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    // "module": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["dom", "ES2022"],
+    "allowJs": false,
+    "checkJs": false,
+    "strict": true,
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "typeRoots": ["./types", "./node_modules/@girs"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "~/types/*": ["./types/*"],
+      "~/services": ["./src/services/index.ts"],
+      "~/modules/*": ["./src/modules/*"],
+      "~/icons": ["./src/icons.ts"],
+      "~/utils": ["./src/utils.ts"],
+      "~/widgets": ["./src/widgets/index.ts"]
+    }
+  }
+  //"include": ["./src/**/*.ts*"]
+  // "include": ["./src/**/*.ts*", "./types/**/ags.d.ts"]
+}

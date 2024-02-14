@@ -1,0 +1,34 @@
+@mixin icon($style: Regular) {
+  font-family: "Font Awesome 6 Pro #{$style}";
+}
+
+@mixin scrollbar($bg_color: $bg_normal, $fg_color: $fg_normal) {
+  $transition: 200ms;
+
+  scrollbar,
+  scrollbar * {
+    all: unset;
+  }
+
+  scrollbar.vertical {
+    // transition: $transition;
+    background-color: transparentize($bg_color, 0.7);
+
+    &:hover {
+      background-color: transparentize($bg_color, 0.3);
+
+      slider {
+        background-color: transparentize($fg_color, 0.3);
+        min-width: 0.6em;
+      }
+    }
+  }
+
+  scrollbar.vertical slider {
+    background-color: transparentize($fg_color, 0.5);
+    // border-radius: $radii;
+    min-width: 0.4em;
+    min-height: 2em;
+    // transition: $transition;
+  }
+}
