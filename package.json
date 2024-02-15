@@ -9,6 +9,7 @@
     "url": "git+https://github.com/webflo/ags.git"
   },
   "scripts": {
+    "build": "npm run build:js && npm run build:css",
     "build:js": "bun build src/config.ts --outdir . --external 'resource:///*' --external 'gi://*'",
     "build:css": "sassc --style expanded --load-path ./scss ./scss/main.scss ./config.css",
     "lint": "eslint --ignore-path .eslintignore --ext .ts --fix src",

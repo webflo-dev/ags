@@ -1,18 +1,31 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-# WORKDIR="$HOME/.config/ags_ts"
 WORKDIR="."
+CSS_FILE="config.css"
+CONF_FILE="config.js"
+INSPECTOR=$([ "$1" == "-i" ] && echo " --inspector " || echo "")
 
-function build() {
-  npm run build
+function build_js() {
+  npm run build:js
+}
+function build_css() {
+  npm run build:css
+}
+
+function reload_css() {
+		ags --run-js "ags.App.resetCss(); ags.App.applyCss('$CSS_FILE');" #&>/dev/null
 }
 
 function reload_ags() {
   pkill ags
-  ags --inspector -c $WORKDIR/config.js &
+  ags $INSPECTOR -c $WORKDIR/$CONF_FILE &
 }
 
+
+build_css
+build_js
 reload_ags
+
 inotifywait --quiet --monitor --event create,modify,delete --recursive $WORKDIR | while read DIRECTORY EVENT FILE; do
   file_extension=${FILE##*.}
   case $file_extension in
@@ -22,13 +35,13 @@ inotifywait --quiet --monitor --event create,modify,delete --recursive $WORKDIR 
     ;;
   ts )
     echo "reload TS..."
-    npm run build:js
+    build_js
     reload_ags
     ;;
   scss)
 		echo "reload SCSS..."
-		npm run build:css
-		ags --run-js "ags.App.resetCss(); ags.App.applyCss('config.css');" #&>/dev/null
+		build_css
+    reload_css
     ;;
   esac
 done
