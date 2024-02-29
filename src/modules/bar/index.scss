@@ -1,0 +1,87 @@
+@mixin module {
+  padding: 6px 12px;
+  // border-radius: 12px;
+  border-radius: 8px;
+  border: 1px solid $color_gray;
+  background-color: $bg_normal_transparent;
+}
+
+.font-icon {
+  font-size: 1.5rem;
+}
+
+#bar {
+  // border-top: 1px solid red;
+  // border-bottom: 1px solid red;
+
+  #date-time {
+    @include module;
+
+    .font-icon {
+      color: $color_yellow;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+  }
+
+  #workspaces {
+    @include module;
+
+    .workspace {
+      padding: 0px 3px;
+      color: $color_gray;
+      transition: color 0.2s ease;
+
+      &.active {
+        color: $color_yellow;
+      }
+
+      &.occupied:not(.active) {
+        color: $color_sky;
+      }
+    }
+  }
+
+  #system-info {
+    @include module;
+
+    .info {
+      & > label {
+        font-family: "monospace";
+      }
+
+      color: $color_green;
+
+      &.warning {
+        color: $color_orange;
+      }
+
+      &.critical {
+        background-color: $color_red;
+        color: $color_light;
+      }
+    }
+  }
+
+  #systray {
+    @include module;
+    font-size: 1.5rem;
+  }
+
+  #audio {
+    @include module;
+
+    .font-icon {
+      color: $color_yellow;
+    }
+
+    .muted {
+      & > label,
+      & > .font-icon {
+        color: $color_red;
+      }
+    }
+  }
+}

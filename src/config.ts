@@ -1,17 +1,28 @@
 import { readFile } from "resource:///com/github/Aylur/ags/utils.js";
-import { Config } from "~/types/app";
 import GLib from "gi://GLib";
+
+import Bar from "@modules/bar";
+import AppLauncher from "@modules/app-launcher";
+import PowerMenu, { togglePowerMenu } from "@modules/power-menu";
+import { type Config } from "app";
 
 const config: Config = {
   style: App.configDir + "/config.css",
-
+  icons: App.configDir + "/icons",
   cacheCoverArt: true,
   cacheNotificationActions: false,
   closeWindowDelay: {},
   maxStreamVolume: 1,
   notificationForceTimeout: true,
   notificationPopupTimeout: 5000,
+  windows: [Bar(), AppLauncher(), PowerMenu()],
 };
+
+// Use for CLI calls
+globalThis.ags = { App };
+globalThis.powermenu = { toggle: togglePowerMenu };
+// globalThis.screenshot = ScreenshotService;
+// globalThis.screenrecord = ScreenrecordService;
 
 const agsVersion = readFile(App.configDir + "/ags-version.txt");
 const pkgVersion = pkg.version;

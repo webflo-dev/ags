@@ -1,0 +1,55 @@
+#app-launcher {
+  @mixin item($color, $background-color) {
+    background-color: $background-color;
+    .title {
+      color: $color;
+    }
+  }
+
+  border: 3px solid $color_lime;
+  border-radius: 8px;
+
+  // background-color: transparentize($color_dark, 0.2);
+  background-color: $color_dark;
+
+  .app-launcher {
+    margin: 24px;
+
+    .entry {
+      margin-bottom: 12px;
+      padding: 5px;
+      background-color: $bg_normal;
+    }
+
+    .list-container {
+      min-width: 500px;
+      min-height: 500px;
+    }
+
+    .app-item {
+      all: unset;
+      border-radius: 8px;
+
+      margin: 4px;
+
+      & .icon {
+        margin: 4px;
+        font-size: 3rem;
+      }
+
+      &:hover {
+        @include item($color_light, $color_gray);
+      }
+
+      &:active,
+      &:focus,
+      &:focus {
+        @include item($color_dark, $color_light);
+
+        &:hover {
+          @include item($color_dark, $color_light);
+        }
+      }
+    }
+  }
+}

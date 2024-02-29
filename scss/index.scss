@@ -1,0 +1,34 @@
+@import "./colors";
+
+window {
+  background: transparent;
+}
+
+button {
+  all: unset;
+}
+
+label {
+  font-family: "system-ui";
+  font-size: 16px;
+  // font-weight: bold;
+  color: $color_light;
+}
+
+.icon-label {
+  font-family: "Font Awesome 6 Pro";
+  font-size: xx-large;
+}
+
+.monospace {
+  font-family: "monospace";
+}
+
+@import "../src/modules/bar";
+@import "../src/modules/app-launcher";
+@import "../src/modules/power-menu";
+// @import "../src/modules/app-launcher/index.scss";
+// @import "../src/modules/notifications/index.scss";
+// @import "../src/modules/power-menu/index.scss";
+// @import "../src/modules/osd/index.scss";
+//
