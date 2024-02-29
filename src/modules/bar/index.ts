@@ -33,7 +33,7 @@ const EndWidget = () =>
     children: [Systray(), Audio(), SystemInfo()],
   });
 
-export default () =>
+export const TopBar = () =>
   Widget.Window({
     name: "bar",
     className: "bar",

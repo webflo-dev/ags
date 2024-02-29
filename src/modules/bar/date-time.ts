@@ -1,5 +1,5 @@
 import { FontIcon } from "@widgets";
-import GLib from "gi://GLib";
+import GLib from "gi://GLib?version=2.0";
 
 const Date = Widget.Label();
 const Time = Widget.Label();

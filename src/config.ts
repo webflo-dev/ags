@@ -1,10 +1,11 @@
 import { readFile } from "resource:///com/github/Aylur/ags/utils.js";
-import GLib from "gi://GLib";
+import GLib from "gi://GLib?version=2.0";
 
-import Bar from "@modules/bar";
-import AppLauncher from "@modules/app-launcher";
-import PowerMenu, { togglePowerMenu } from "@modules/power-menu";
 import { type Config } from "app";
+import { TopBar } from "@modules/bar";
+import { AppLauncher } from "@modules/app-launcher";
+import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
+import { VolumeOSD } from "@modules/osd";
 
 const config: Config = {
   style: App.configDir + "/config.css",
@@ -15,7 +16,7 @@ const config: Config = {
   maxStreamVolume: 1,
   notificationForceTimeout: true,
   notificationPopupTimeout: 5000,
-  windows: [Bar(), AppLauncher(), PowerMenu()],
+  windows: [TopBar(), AppLauncher(), PowerMenu(), VolumeOSD()],
 };
 
 // Use for CLI calls

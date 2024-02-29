@@ -128,7 +128,7 @@ actionButtons
     "notify::shown"
   );
 
-export default () => {
+export const PowerMenu = () => {
   return Widget.Window({
     name: WINDOW_NAME,
     popup: true,

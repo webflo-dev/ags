@@ -30,7 +30,7 @@ const AppItem = (app: Application) =>
     }),
   });
 
-const Applauncher = () => {
+const _Applauncher = () => {
   let applications = query("").map(AppItem);
 
   const list = Widget.Box({
@@ -82,11 +82,11 @@ const Applauncher = () => {
   });
 };
 
-export default () =>
+export const AppLauncher = () =>
   Widget.Window({
     name: WINDOW_NAME,
     popup: true,
     visible: false,
     keymode: "exclusive",
-    child: Applauncher(),
+    child: _Applauncher(),
   });

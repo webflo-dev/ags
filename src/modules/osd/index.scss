@@ -1,0 +1,26 @@
+#osd {
+  .overlay {
+    padding: 2px;
+  }
+
+  .progress-bar {
+    margin: 8px;
+    border: 2px solid $color_sky;
+    background-color: $bg_normal;
+    border-radius: 8px;
+
+    padding: 4px;
+
+    .fill {
+      border-radius: 8px - 4px;
+      background-color: $color_sky;
+      color: $bg_normal;
+
+      image {
+        padding-top: 15px;
+        padding-bottom: 10px;
+        border-top: 1px solid $bg_normal;
+      }
+    }
+  }
+}
