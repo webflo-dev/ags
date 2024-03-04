@@ -1,168 +1,75 @@
-import { type Variable as TVariable } from "types/variable";
+import { ScriptOutput, watchScript } from "./script-service";
 
-type ScriptDatum = Record<string, string>;
-type ScriptOutput = { signal: string; datum: ScriptDatum };
+type Cpu = {
+  usage: number;
+};
 
-const regex = new RegExp(/(\w+=("[^"]*"|[^ ]*))/g);
-function parseScriptOutput(input: string): ScriptOutput {
-  const firstSeparator = input.indexOf(" ");
+type Gpu = {
+  usage: number;
+};
 
-  const signal = input.substring(0, firstSeparator);
+type Memory = {
+  total: number;
+  free: number;
+  used: number;
+};
 
-  const values = input.substring(firstSeparator + 1);
-  const pairs = values.match(regex);
+type Info<K extends string, T extends Cpu | Gpu | Memory> = {
+  notifyProp: K;
+  value: T;
+};
 
-  const datum: ScriptDatum = {};
+const cpu = Variable<Cpu>({ usage: 0 });
+const gpu = Variable<Gpu>({ usage: 0 });
+const memory = Variable<Memory>({ total: 0, free: 0, used: 0 });
 
-  if (pairs) {
-    pairs.forEach((pair) => {
-      const [key, value] = pair.split("=");
-      datum[key] = value.replace(/"/g, "");
-    });
-  }
-
-  return { signal, datum };
-}
-
-class CpuService extends Service {
-  static {
-    Service.register(
-      this,
-      {},
-      {
-        usage: ["string", "rw"],
-      }
-    );
-  }
-
-  private _usage = "";
-
-  get usage() {
-    return this._usage;
-  }
-}
-
-class GpuService extends Service {
-  static {
-    Service.register(
-      this,
-      {},
-      {
-        usage: ["string"],
-      }
-    );
-  }
-
-  private _usage = "";
-
-  get usage() {
-    return this._usage;
-  }
-}
-
-class MemoryService extends Service {
-  static {
-    Service.register(
-      this,
-      {},
-      {
-        total: ["string"],
-        free: ["string"],
-        used: ["string"],
-      }
-    );
-  }
-
-  private _total = "";
-  private _free = "";
-  private _used = "";
-
-  get total() {
-    return this._total;
-  }
-  get free() {
-    return this._free;
-  }
-  get used() {
-    return this._used;
-  }
-}
-
-type SystemService = CpuService | GpuService | MemoryService;
-
-class SystemInfoService extends Service {
-  static {
-    Service.register(
-      this,
-      {},
-      {
-        cpu: ["jsobject"],
-        gpu: ["jsobject"],
-        memory: ["jsobject"],
-      }
-    );
-  }
-
-  #var: TVariable<void>;
-
-  private _cpu = new CpuService();
-  private _gpu = new GpuService();
-  private _memory = new MemoryService();
-
-  #getService(signal: string): [SystemService, string] | undefined {
-    switch (signal) {
-      case "CPU":
-        return [this._cpu, "cpu"];
-      case "GPU":
-        return [this._gpu, "gpu"];
-      case "MEMORY":
-        return [this._memory, "memory"];
-    }
-  }
-
-  constructor() {
-    super();
-
-    this.#var = Variable(undefined, {
-      listen: [
-        `${App.configDir}/scripts/system.sh`,
-        (output) => {
-          const scriptOutput = parseScriptOutput(output);
-
-          const info = this.#getService(scriptOutput.signal);
-          if (!info) return;
-
-          const [service, notifyProp] = info;
-          if (!service) return;
-
-          Object.entries(scriptOutput.datum).forEach(([prop, value]) => {
-            service.updateProperty(prop, value);
-            service.notify(prop);
-          });
-
-          service.emit("changed");
-          this.emit("changed");
-          this.notify(notifyProp);
+function parse(
+  output: ScriptOutput
+): Info<"cpu", Cpu> | Info<"gpu", Gpu> | Info<"memory", Memory> | undefined {
+  switch (output.signal) {
+    case "CPU":
+      return {
+        notifyProp: "cpu",
+        value: { usage: Number(output.datum.usage) },
+      };
+    case "GPU":
+      return {
+        notifyProp: "gpu",
+        value: { usage: Number(output.datum.usage) },
+      };
+    case "MEMORY":
+      return {
+        notifyProp: "memory",
+        value: {
+          total: Number(output.datum.total),
+          free: Number(output.datum.free),
+          used: Number(output.datum.used),
         },
-      ],
-    });
-  }
-
-  dispose() {
-    this.#var.dispose();
-  }
-
-  get cpu() {
-    return this._cpu;
-  }
-
-  get gpu() {
-    return this._gpu;
-  }
-
-  get memory() {
-    return this._memory;
+      };
+    default:
+      return undefined;
   }
 }
 
-export const SystemInfo = new SystemInfoService();
+watchScript("system.sh", parse, (signal, values) => {
+  if (!values) return;
+  const { notifyProp, value } = values;
+
+  switch (notifyProp) {
+    case "cpu":
+      cpu.setValue(value);
+      break;
+    case "gpu":
+      gpu.setValue(value);
+      break;
+    case "memory":
+      memory.setValue(value);
+      break;
+  }
+});
+
+export const SystemInfo = {
+  cpu,
+  gpu,
+  memory,
+};

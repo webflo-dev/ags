@@ -1,7 +1,6 @@
 import { FontIcon } from "@widgets";
 import { Progress } from "./progress";
-
-const audio = await Service.import("audio");
+import { Audio } from "@services";
 
 type OnScreenProgressProps = {
   vertical: boolean;
@@ -23,20 +22,31 @@ export function OnScreenProgress({ vertical, delay }: OnScreenProgressProps) {
     child: indicator,
   });
 
+  const progressBar = Widget.Box({
+    vertical: true,
+    className: "progress-bar",
+    children: [progress, indicator],
+  });
+
   const revealer = Widget.Revealer({
     transition: "slide_left",
-    child: progress,
+    child: progressBar,
   });
 
   let count = 0;
-  function show(value: number, icon: string) {
+  function show() {
+    progressBar.toggleClassName("muted", Audio.speakers.defaultSpeaker.muted);
+
+    indicator.icon = FontIcon.getName(
+      Audio.speakers.defaultSpeaker.muted ? "volume-slash" : "volume"
+    );
+
+    progress.setValue(Audio.speakers.defaultSpeaker.volume);
+
     revealer.reveal_child = true;
-    indicator.icon = icon;
-    progress.setValue(value);
     count++;
     Utils.timeout(delay, () => {
       count--;
-
       if (count === 0) revealer.reveal_child = false;
     });
   }
@@ -53,16 +63,18 @@ export function OnScreenProgress({ vertical, delay }: OnScreenProgressProps) {
       //   () => show(brightness.kbd, icons.brightness.keyboard),
       //   "notify::kbd"
       // )
-      .hook(
-        audio.speaker,
-        () =>
-          show(
-            audio.speaker.volume,
-            FontIcon.getName(
-              audio.speaker.stream?.isMuted ? "volume-slash" : "volume"
-            )
-          ),
-        "notify::volume"
-      )
+      // .hook(
+      //   Audio.speakers.defaultSpeaker,
+      //   () =>
+      //     show(
+      //       Audio.speakers.defaultSpeaker.volume,
+      //       FontIcon.getName(
+      //         Audio.speakers.defaultSpeaker.muted ? "volume-slash" : "volume"
+      //       )
+      //     ),
+      //   "notify::volume"
+      // )
+      .hook(Audio.speakers.defaultSpeaker, show, "notify::volume")
+      .hook(Audio.speakers.defaultSpeaker, show, "notify::muted")
   );
 }

@@ -7,7 +7,7 @@ const levels = [
   { thresold: 90, value: "critical" },
   { thresold: 70, value: "warning" },
 ] as const;
-function getLevel(value: number | string) {
+function getLevel(value: string) {
   const current = Number(value);
   return levels.find(({ thresold }) => current >= thresold)?.value;
 }
@@ -37,14 +37,20 @@ export function SystemInfo() {
     spacing: 24,
 
     children: [
-      SystemModule("processor-symbolic", SystemInfoService.cpu.bind("usage")),
+      SystemModule(
+        "processor-symbolic",
+        SystemInfoService.cpu.bind().as(({ usage }) => `${usage}`)
+      ),
       SystemModule(
         "memory-symbolic",
-        SystemInfoService.bind("memory").as(({ used, total }) =>
-          Math.floor((Number(used) / Number(total)) * 100).toString()
-        )
+        SystemInfoService.memory
+          .bind()
+          .as(({ used, total }) => Math.floor((used / total) * 100).toString())
       ),
-      SystemModule("gpu-symbolic", SystemInfoService.gpu.bind("usage")),
+      SystemModule(
+        "gpu-symbolic",
+        SystemInfoService.gpu.bind().as(({ usage }) => `${usage}`)
+      ),
     ],
   });
 }

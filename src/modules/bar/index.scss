@@ -49,7 +49,7 @@
 
     .info {
       & > label {
-        font-family: "monospace";
+        @include font-monospace;
       }
 
       color: $color_green;
@@ -72,6 +72,10 @@
 
   #audio {
     @include module;
+
+    label {
+      @include font-monospace;
+    }
 
     .font-icon {
       color: $color_yellow;
