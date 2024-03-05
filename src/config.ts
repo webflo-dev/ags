@@ -6,6 +6,7 @@ import { TopBar } from "@modules/bar";
 import { AppLauncher } from "@modules/app-launcher";
 import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
 import { VolumeOSD } from "@modules/osd";
+import { NotificationCenter } from "@modules/notification-center";
 
 const config: Config = {
   style: App.configDir + "/config.css",
@@ -16,7 +17,13 @@ const config: Config = {
   maxStreamVolume: 1,
   notificationForceTimeout: true,
   notificationPopupTimeout: 5000,
-  windows: [TopBar(), AppLauncher(), PowerMenu(), VolumeOSD()],
+  windows: [
+    TopBar(),
+    AppLauncher(),
+    PowerMenu(),
+    VolumeOSD(),
+    NotificationCenter(),
+  ],
 };
 
 // Use for CLI calls

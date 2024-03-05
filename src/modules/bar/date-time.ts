@@ -15,12 +15,12 @@ export function DateTime() {
         Widget.Box({
           className: "date",
           spacing: 8,
-          children: [FontIcon("calendar-day"), Date],
+          children: [FontIcon({ icon: "calendar-day" }), Date],
         }),
         Widget.Box({
           className: "time",
           spacing: 8,
-          children: [FontIcon("clock"), Time],
+          children: [FontIcon({ icon: "clock" }), Time],
         }),
       ],
       setup: (self) => {

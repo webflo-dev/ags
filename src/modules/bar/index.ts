@@ -3,6 +3,7 @@ import { Workspaces } from "./workspace";
 import { SystemInfo } from "./system-info";
 import { Systray } from "./systray";
 import { Audio } from "./audio";
+import { NotificationIndicator } from "./notification-indicator";
 
 const StartWidget = () =>
   Widget.Box({
@@ -15,22 +16,29 @@ const CenterWidget = () =>
   Widget.Box({
     spacing: 8,
     className: "middle",
+    hpack: "center",
     children: [
       DateTime(),
       // Date(),
       // Time(),
       // ScreenrecordIndicator(),
       // ScreenshotIndicator(),
-      // NotificationIndicator(),
     ],
   });
 
 const EndWidget = () =>
   Widget.Box({
-    hpack: "end",
     className: "right",
     spacing: 8,
-    children: [Systray(), Audio(), SystemInfo()],
+    children: [
+      NotificationIndicator(),
+      Widget.Box({
+        hpack: "end",
+        hexpand: true,
+        spacing: 8,
+        children: [Systray(), Audio(), SystemInfo()],
+      }),
+    ],
   });
 
 export const TopBar = () =>
@@ -41,6 +49,7 @@ export const TopBar = () =>
     anchor: ["top", "left", "right"],
     margins: [5, 20, 0, 20],
     child: Widget.CenterBox({
+      spacing: 8,
       // className: "bar",
       startWidget: StartWidget(),
       centerWidget: CenterWidget(),

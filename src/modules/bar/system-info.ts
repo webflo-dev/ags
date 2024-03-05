@@ -23,7 +23,7 @@ function SystemModule(
       return clsx("info", getLevel(v));
     }),
     children: [
-      FontIcon(icon),
+      FontIcon({ icon }),
       Widget.Label({
         label: binding.as((v) => `${v.padStart(2, " ")}%`),
       }),

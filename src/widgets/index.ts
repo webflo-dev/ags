@@ -1,1 +1,1 @@
-export { FontIcon } from "./FontIcon";
+export { FontIcon, getFontIconName } from "./FontIcon";

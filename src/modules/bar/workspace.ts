@@ -18,7 +18,7 @@ export function Workspaces() {
             occupied: (hyprland.getWorkspace(id)?.windows || 0) > 0,
           })
         ),
-        child: FontIcon(`circle-${id}`),
+        child: FontIcon({ icon: `circle-${id}` }),
         onClicked: () => hyprland.messageAsync(`dispatch workspace ${id}`),
       })
     ),

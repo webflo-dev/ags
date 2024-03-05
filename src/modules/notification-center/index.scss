@@ -1,0 +1,17 @@
+$accent: $color_lime;
+$bg_color: $bg_normal;
+$fg_color: $fg_normal;
+$radius: 8px;
+
+#notification-center {
+  .notification-center {
+    min-width: 600px;
+    min-height: 600px;
+    padding: 1.5rem;
+
+    border: 2px solid $accent;
+    border-radius: $radius;
+    background-color: $bg_color;
+    color: $fg_color;
+  }
+}

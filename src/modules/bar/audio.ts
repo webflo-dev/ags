@@ -14,11 +14,11 @@ function Microphone() {
         .as((muted) => `microphone ${clsx({ muted })}`),
       spacing: 8,
       children: [
-        FontIcon(
-          AudioService.microphones.defaultMicrophone
+        FontIcon({
+          icon: AudioService.microphones.defaultMicrophone
             .bind("muted")
-            .as((muted) => (muted ? "microphone-slash" : "microphone"))
-        ),
+            .as((muted) => (muted ? "microphone-slash" : "microphone")),
+        }),
       ],
     }),
   });
@@ -36,11 +36,11 @@ function Volume() {
         .as((muted) => `volume ${clsx({ muted })}`),
       spacing: 8,
       children: [
-        FontIcon(
-          AudioService.speakers.defaultSpeaker
+        FontIcon({
+          icon: AudioService.speakers.defaultSpeaker
             .bind("muted")
-            .as((muted) => (muted ? "volume-slash" : "volume"))
-        ),
+            .as((muted) => (muted ? "volume-slash" : "volume")),
+        }),
         Widget.Label({
           label: AudioService.speakers.defaultSpeaker
             .bind("volume")

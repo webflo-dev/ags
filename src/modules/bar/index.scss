@@ -88,4 +88,24 @@
       }
     }
   }
+
+  #notification-indicator {
+    button {
+      @include module;
+    }
+
+    .font-icon {
+      color: $color_yellow;
+    }
+
+    &.empty {
+      .font-icon {
+        color: $color_gray;
+      }
+    }
+
+    .summary {
+      margin-left: 8px;
+    }
+  }
 }

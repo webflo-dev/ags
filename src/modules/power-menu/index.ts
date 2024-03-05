@@ -52,7 +52,7 @@ function ActionButton(action: Action) {
       spacing: 8,
       vertical: true,
       vpack: "center",
-      children: [FontIcon(action.icon), Widget.Label(action.label)],
+      children: [FontIcon({ icon: action.icon }), Widget.Label(action.label)],
     }),
   });
 }
@@ -76,7 +76,9 @@ const powerMenuConfirm = Widget.Box({
       hpack: "center",
       spacing: 16,
       children: [
-        FontIcon(actionToConfirm.bind("value").as((v) => v?.icon || "")),
+        FontIcon({
+          icon: actionToConfirm.bind("value").as((v) => v?.icon || ""),
+        }),
         Widget.Label({
           label: actionToConfirm.bind("value").as((v) => v?.label || "---"),
         }),
