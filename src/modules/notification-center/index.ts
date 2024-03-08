@@ -1,24 +1,36 @@
 import GLib from "gi://GLib";
-import { FontIcon } from "@widgets";
+import { FontIcon, getFontIconName } from "@widgets";
 import { type Notification as Notif } from "types/service/notifications";
 
 const WINDOW_NAME = "notification-center";
 
 const notifications = await Service.import("notifications");
 const _notifications = notifications.bind("notifications");
-const _dnd = notifications.bind("dnd");
+
+function time(time: number, format = "%H:%M") {
+  return GLib.DateTime.new_from_unix_local(time).format(format);
+}
 
 function Header() {
+  const dndButton = Widget.Button({
+    className: "dnd",
+    child: FontIcon({ icon: "notification" }),
+    onClicked: () => (notifications.dnd = !notifications.dnd),
+  }).hook(
+    notifications,
+    (self) => {
+      self.child.icon = getFontIconName(
+        notifications.dnd ? "dnd" : "notification"
+      );
+      self.toggleClassName("on", notifications.dnd);
+    },
+    "notify::dnd"
+  );
+
   return Widget.CenterBox({
     className: "header",
     startWidget: Widget.Box({
-      child: Widget.Button({
-        className: "btn-dnd",
-        child: FontIcon({
-          icon: _dnd.as((dnd) => (dnd ? "dnd" : "notification")),
-        }),
-        onClicked: () => (notifications.dnd = !notifications.dnd),
-      }),
+      child: dndButton,
     }),
     centerWidget: Widget.Box({
       child: Widget.Label({
@@ -30,9 +42,10 @@ function Header() {
     endWidget: Widget.Box({
       hpack: "end",
       child: Widget.Button({
-        className: "btn-clear",
+        className: "clear",
         visible: _notifications.as((n) => n.length > 0),
         child: Widget.Box({
+          spacing: 8,
           children: [
             FontIcon({ icon: "clear-notifications" }),
             Widget.Label({
@@ -46,24 +59,13 @@ function Header() {
   });
 }
 
-function time(time: number, format = "%H:%M") {
-  return GLib.DateTime.new_from_unix_local(time).format(format);
-}
-
 function NotificationIcon({ app_entry, app_icon, image }: Notif) {
   if (image) {
     return Widget.Box({
       vpack: "start",
       hexpand: false,
-      class_name: "icon img",
-      css: `
-              background-image: url("${image}");
-              background-size: cover;
-              background-repeat: no-repeat;
-              background-position: center;
-              min-width: 78px;
-              min-height: 78px;
-          `,
+      className: "icon",
+      css: `background-image: url("${image}");`,
     });
   }
 
@@ -75,7 +77,7 @@ function NotificationIcon({ app_entry, app_icon, image }: Notif) {
   return Widget.Box({
     vpack: "start",
     hexpand: false,
-    class_name: "icon",
+    className: "icon",
     css: `
           min-width: 78px;
           min-height: 78px;
@@ -93,7 +95,7 @@ function NotificationIcon({ app_entry, app_icon, image }: Notif) {
 
 function Notification(notification: Notif) {
   const content = Widget.Box({
-    class_name: "content",
+    className: "content",
     children: [
       NotificationIcon(notification),
       Widget.Box({
@@ -103,37 +105,37 @@ function Notification(notification: Notif) {
           Widget.Box({
             children: [
               Widget.Label({
-                class_name: "title",
+                className: "title",
                 xalign: 0,
                 justification: "left",
                 hexpand: true,
-                max_width_chars: 24,
+                maxWidthChars: 24,
                 truncate: "end",
                 wrap: true,
                 label: notification.summary.trim(),
-                use_markup: true,
+                useMarkup: true,
               }),
               Widget.Label({
-                class_name: "time",
+                className: "time",
                 vpack: "start",
                 label: time(notification.time),
               }),
               Widget.Button({
-                class_name: "close-button",
+                className: "close-button",
                 vpack: "start",
                 child: Widget.Icon("window-close-symbolic"),
-                on_clicked: notification.close,
+                onClicked: notification.close,
               }),
             ],
           }),
           Widget.Label({
-            class_name: "description",
+            className: "description",
             hexpand: true,
-            use_markup: true,
+            useMarkup: true,
             xalign: 0,
             justification: "left",
             label: notification.body.trim(),
-            max_width_chars: 24,
+            maxWidthChars: 24,
             wrap: true,
           }),
         ],
@@ -143,44 +145,26 @@ function Notification(notification: Notif) {
 
   const actionsbox =
     notification.actions.length > 0
-      ? Widget.Revealer({
-          transition: "slide_down",
-          child: Widget.EventBox({
-            child: Widget.Box({
-              class_name: "actions horizontal",
-              children: notification.actions.map((action) =>
-                Widget.Button({
-                  class_name: "action-button",
-                  on_clicked: () => notification.invoke(action.id),
-                  hexpand: true,
-                  child: Widget.Label(action.label),
-                })
-              ),
-            }),
-          }),
+      ? Widget.Box({
+          className: "actions horizontal",
+          // homogeneous: true,
+          children: notification.actions.map((action) =>
+            Widget.Button({
+              className: "action",
+              onClicked: () => notification.invoke(action.id),
+              hexpand: true,
+              child: Widget.Label(action.label),
+            })
+          ),
         })
       : null;
 
-  const eventbox = Widget.EventBox({
-    vexpand: false,
-    on_primary_click: notification.dismiss,
-    on_hover() {
-      if (actionsbox) actionsbox.reveal_child = true;
-    },
-    on_hover_lost() {
-      if (actionsbox) actionsbox.reveal_child = true;
-
-      notification.dismiss();
-    },
-    child: Widget.Box({
-      vertical: true,
-      children: actionsbox ? [content, actionsbox] : [content],
-    }),
-  });
-
   return Widget.Box({
-    class_name: `notification ${notification.urgency}`,
-    child: eventbox,
+    className: `notification ${notification.urgency}`,
+    vexpand: false,
+    hexpand: true,
+    vertical: true,
+    children: actionsbox ? [content, actionsbox] : [content],
   });
 }
 
@@ -214,7 +198,7 @@ function List() {
     )
     .hook(
       notifications,
-      (_, id: number) => {
+      (self, id: number) => {
         if (id !== undefined) {
           if (map.has(id)) {
             remove(id);
@@ -225,7 +209,7 @@ function List() {
 
           const notifWidget = Notification(notif);
           map.set(id, notifWidget);
-          _.children = [notifWidget, ..._.children];
+          self.children = [notifWidget, ...self.children];
         }
       },
       "notified"
@@ -241,6 +225,8 @@ function List() {
 
 function _NotificationCenter() {
   return Widget.Box({
+    hpack: "center",
+    vpack: "start",
     vertical: true,
     className: "notification-center",
     children: [Header(), List()],
@@ -252,7 +238,11 @@ export const NotificationCenter = () =>
     name: WINDOW_NAME,
     popup: true,
     visible: false,
-    anchor: ["top"],
-    // keymode: "exclusive",
-    child: _NotificationCenter(),
+    anchor: ["top", "right", "bottom", "left"],
+    child: Widget.EventBox({
+      onPrimaryClick: () => {
+        App.closeWindow(WINDOW_NAME);
+      },
+      child: _NotificationCenter(),
+    }),
   });
