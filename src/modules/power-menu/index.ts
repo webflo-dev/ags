@@ -137,6 +137,7 @@ export const PowerMenu = () => {
     visible: false,
     keymode: "exclusive",
     anchor: ["top", "left", "bottom", "right"],
+    exclusivity: "ignore",
     child: stack,
     setup: (self) => {
       self.hook(

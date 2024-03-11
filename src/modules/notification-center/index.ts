@@ -1,5 +1,5 @@
 import GLib from "gi://GLib";
-import { FontIcon, getFontIconName } from "@widgets";
+import { FontIcon, PopupWindow, getFontIconName } from "@widgets";
 import { type Notification as Notif } from "types/service/notifications";
 
 const WINDOW_NAME = "notification-center";
@@ -233,16 +233,11 @@ function _NotificationCenter() {
   });
 }
 
-export const NotificationCenter = () =>
-  Widget.Window({
+export const NotificationCenter = () => {
+  return PopupWindow({
+    exclusivity: "exclusive",
     name: WINDOW_NAME,
-    popup: true,
-    visible: false,
-    anchor: ["top", "right", "bottom", "left"],
-    child: Widget.EventBox({
-      onPrimaryClick: () => {
-        App.closeWindow(WINDOW_NAME);
-      },
-      child: _NotificationCenter(),
-    }),
+    layout: "top-center",
+    child: _NotificationCenter(),
   });
+};

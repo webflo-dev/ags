@@ -1,3 +1,4 @@
+import { PopupWindow } from "@widgets";
 import { Application } from "types/service/applications";
 
 const { query } = await Service.import("applications");
@@ -82,11 +83,10 @@ const _Applauncher = () => {
   });
 };
 
-export const AppLauncher = () =>
-  Widget.Window({
+export const AppLauncher = () => {
+  return PopupWindow({
     name: WINDOW_NAME,
-    popup: true,
-    visible: false,
-    keymode: "exclusive",
+    layout: "center",
     child: _Applauncher(),
   });
+};
