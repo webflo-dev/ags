@@ -38,17 +38,17 @@ export function SystemInfo() {
 
     children: [
       SystemModule(
-        "processor-symbolic",
+        "processor",
         SystemInfoService.cpu.bind().as(({ usage }) => `${usage}`)
       ),
       SystemModule(
-        "memory-symbolic",
+        "memory",
         SystemInfoService.memory
           .bind()
           .as(({ used, total }) => Math.floor((used / total) * 100).toString())
       ),
       SystemModule(
-        "gpu-symbolic",
+        "gpu",
         SystemInfoService.gpu.bind().as(({ usage }) => `${usage}`)
       ),
     ],

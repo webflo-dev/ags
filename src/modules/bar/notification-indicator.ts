@@ -1,4 +1,3 @@
-import { merge } from "@utils";
 import { FontIcon } from "@widgets";
 import { clsx } from "clsx";
 import type { Notification } from "types/service/notifications";
@@ -19,7 +18,7 @@ export function NotificationIndicator() {
 
   return Widget.Box({
     name: "notification-indicator",
-    className: merge([_dnd, _notifications], (dnd, notifications) =>
+    className: Utils.merge([_dnd, _notifications], (dnd, notifications) =>
       clsx({
         dnd: dnd,
         empty: notifications.length === 0,
@@ -66,20 +65,11 @@ export function NotificationIndicator() {
         }),
         onClicked: () => {
           App.toggleWindow("notification-center");
-          // if (notifications.notifications.length > 0) {
-          //   App.toggleWindow("notification-center");
-          // }
         },
         onSecondaryClick: () => {
           notifications.dnd = !notifications.dnd;
         },
       }),
-      // Widget.Button({
-      //   label: "Clear",
-      //   onClicked: () => {
-      //     notifications.clear();
-      //   },
-      // }),
     ],
   });
 }

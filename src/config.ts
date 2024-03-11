@@ -1,36 +1,42 @@
 import { readFile } from "resource:///com/github/Aylur/ags/utils.js";
 import GLib from "gi://GLib?version=2.0";
 
-import { type Config } from "app";
 import { TopBar } from "@modules/bar";
 import { AppLauncher } from "@modules/app-launcher";
 import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
 import { VolumeOSD } from "@modules/osd";
 import { NotificationCenter } from "@modules/notification-center";
 
-const config: Config = {
-  style: App.configDir + "/config.css",
-  icons: App.configDir + "/icons",
-  cacheCoverArt: true,
-  cacheNotificationActions: false,
-  closeWindowDelay: {},
-  maxStreamVolume: 1,
-  notificationForceTimeout: true,
-  notificationPopupTimeout: 5000,
-  windows: [
-    TopBar(),
-    AppLauncher(),
-    PowerMenu(),
-    VolumeOSD(),
-    NotificationCenter(),
-  ],
-};
+async function start() {
+  // const notifications = await Service.import("notifications");
+  // notifications.forceTimeout = true;
+  // notifications.popupTimeout = 5000;
+  // notifications.cacheActions = false;
 
-// Use for CLI calls
-globalThis.ags = { App };
-globalThis.powermenu = { toggle: togglePowerMenu };
-// globalThis.screenshot = ScreenshotService;
-// globalThis.screenrecord = ScreenrecordService;
+  // const audio = await Service.import("audio");
+  // audio.maxStreamVolume = 1;
+
+  // const mpris = await Service.import("mpris");
+  // mpris.cacheCoverArt = true;
+
+  App.addIcons(App.configDir + "/icons");
+  App.applyCss(App.configDir + "/config.css");
+
+  App.config({
+    windows: [
+      TopBar(),
+      AppLauncher(),
+      PowerMenu(),
+      VolumeOSD(),
+      NotificationCenter(),
+    ],
+  });
+  // Use for CLI calls
+  globalThis.ags = { App };
+  globalThis.powermenu = { toggle: togglePowerMenu };
+  // globalThis.screenshot = ScreenshotService;
+  // globalThis.screenrecord = ScreenrecordService;
+}
 
 const agsVersion = readFile(App.configDir + "/ags-version.txt");
 const pkgVersion = pkg.version;
@@ -49,8 +55,8 @@ function checkVersion() {
     return {};
   } else {
     print("version OK");
-    return config;
+    start();
   }
 }
 
-export default checkVersion();
+await checkVersion();

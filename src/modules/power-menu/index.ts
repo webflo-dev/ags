@@ -40,13 +40,18 @@ function CenteredBox(props: BoxProps) {
   });
 }
 
-function ActionButton(action: Action) {
+type ActionButtonProps = {
+  action: Action;
+  onClicked: () => void;
+};
+
+function ActionButton({ action, onClicked }: ActionButtonProps) {
   return Widget.Button({
     onClicked: () => {
       actionToConfirm.value = action;
-      stack.shown = "confirmation";
-      cancelButton.grab_focus();
+      onClicked();
     },
+    attribute: action.key,
     className: action.key,
     child: Widget.Box({
       spacing: 8,
@@ -57,83 +62,108 @@ function ActionButton(action: Action) {
   });
 }
 
-const actionButtons = Actions.map(ActionButton);
+type PowerMenuConfirmProps = {
+  onCancel: () => void;
+  onConfirm: (action: Action) => void;
+};
 
-const cancelButton = Widget.Button({
-  className: "cancel",
-  label: "No",
-  onClicked: () => {
-    stack.shown = "selection";
-  },
-});
+function PowerMenuConfirm({ onCancel, onConfirm }: PowerMenuConfirmProps) {
+  const cancelBtn = Widget.Button({
+    className: "cancel",
+    label: "No",
+    onClicked: onCancel,
+  });
 
-const powerMenuConfirm = Widget.Box({
-  className: actionToConfirm.bind("value").as((v) => `${v?.key}`),
-  vertical: true,
-  children: [
-    Widget.Box({
-      className: "title",
-      hpack: "center",
-      spacing: 16,
-      children: [
-        FontIcon({
-          icon: actionToConfirm.bind("value").as((v) => v?.icon || ""),
-        }),
-        Widget.Label({
-          label: actionToConfirm.bind("value").as((v) => v?.label || "---"),
-        }),
-      ],
-    }),
-    Widget.Box({
-      className: "buttons",
-      vexpand: true,
-      vpack: "end",
-      homogeneous: true,
-      children: [
-        cancelButton,
-        Widget.Button({
-          className: "confirm",
-          label: "Yes",
-          onClicked: () => {
-            if (actionToConfirm.value) {
-              Utils.exec(actionToConfirm.value.cmd);
-            }
-          },
-        }),
-      ],
-    }),
-  ],
-});
+  const menu = Widget.Box({
+    className: actionToConfirm.bind("value").as((v) => `${v?.key}`),
+    vertical: true,
+    children: [
+      Widget.Box({
+        className: "title",
+        hpack: "center",
+        spacing: 16,
+        children: [
+          FontIcon({
+            icon: actionToConfirm.bind("value").as((v) => v?.icon || ""),
+          }),
+          Widget.Label({
+            label: actionToConfirm.bind("value").as((v) => v?.label || "---"),
+          }),
+        ],
+      }),
+      Widget.Box({
+        className: "buttons",
+        vexpand: true,
+        vpack: "end",
+        homogeneous: true,
+        children: [
+          cancelBtn,
+          Widget.Button({
+            className: "confirm",
+            label: "Yes",
+            onClicked: () => {
+              if (actionToConfirm.value) {
+                onConfirm(actionToConfirm.value);
+              }
+            },
+          }),
+        ],
+      }),
+    ],
+  });
 
-const stack = Widget.Stack({
-  children: {
-    selection: CenteredBox({
-      homogeneous: true,
-      classNames: ["power-menu", "selection"],
-      children: actionButtons,
-    }),
-    confirmation: CenteredBox({
-      homogeneous: true,
-      classNames: ["power-menu", "confirmation"],
-      child: powerMenuConfirm,
-    }),
-  },
-});
-
-actionButtons
-  .find((button) => button.class_name === "logout")
-  ?.hook(
-    stack,
-    (btn) => {
-      if (stack.shown === "selection") btn.grab_focus();
+  return Object.assign(menu, {
+    onShown: () => {
+      cancelBtn.grab_focus();
     },
-    "notify::shown"
+  });
+}
+
+export function PowerMenu() {
+  const actionButtons = Actions.map((action) =>
+    ActionButton({
+      action,
+      onClicked: () => {
+        stack.shown = "confirmation";
+      },
+    })
   );
 
-export const PowerMenu = () => {
+  const confirmMenu = PowerMenuConfirm({
+    onCancel: () => {
+      stack.shown = "selection";
+    },
+    onConfirm: (action) => {
+      Utils.exec(action.cmd);
+    },
+  });
+
+  const stack = Widget.Stack({
+    children: {
+      selection: CenteredBox({
+        homogeneous: true,
+        classNames: ["power-menu", "selection"],
+        children: actionButtons,
+      }),
+      confirmation: CenteredBox({
+        homogeneous: true,
+        classNames: ["power-menu", "confirmation"],
+        child: confirmMenu,
+      }),
+    },
+  }).on("notify::shown", (_) => {
+    switch (_.shown) {
+      case "selection":
+        actionButtons.find((btn) => btn.attribute === "logout")?.grab_focus();
+        break;
+      case "confirmation":
+        confirmMenu.onShown();
+        break;
+    }
+  });
+
   return Widget.Window({
     name: WINDOW_NAME,
-    popup: true,
     visible: false,
     keymode: "exclusive",
     anchor: ["top", "left", "bottom", "right"],
@@ -150,8 +180,8 @@ export const PowerMenu = () => {
         "window-toggled"
       );
     },
-  });
-};
+  }).keybind("Escape", () => App.closeWindow(WINDOW_NAME));
+}
 
 export function togglePowerMenu() {
   App.toggleWindow(WINDOW_NAME);
