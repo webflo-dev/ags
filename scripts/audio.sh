@@ -1,51 +1,27 @@
 #!/usr/bin/env bash
 
-pattern_event="(sink-input|sink|source|source-output) #([0-9]+)"
-pattern_volume="([0-9]+)%"
-pattern_mute="(yes|no)"
+pattern_event="(sink|source)-?(input)? #([0-9]+)"
 
 function emit() {
-	type=$1
-	id=$2
-	volume=$(pactl get-$type-volume $id)
-	if [[ $volume =~ $pattern_volume ]]; then
-		volume="${BASH_REMATCH[1]}"
-	else
-		volume=""
-	fi
-
-	muted=$(pactl get-$type-mute $id)
-	if [[ $muted =~ $pattern_mute ]]; then
-		muted="${BASH_REMATCH[1]}"
-	else
-		muted=""
-	fi
-
-	echo "AUDIO::$type volume=$volume muted=$muted"
+	# pulsemixer --list-${1}s | sed -r "s#^.*(${1})-?(input)?-([0-9]+).*Name: (.*), Mute: (0|1).*'([0-9]+)%'.*\$#AUDIO type=\1-\2 id=\3 name=\"\4\" muted=\5 volume=\6#g" | sed "s/${1}- /${1} /" | ([[ -n $2 ]] && grep id=$2 || cat - )
+	pulsemixer --list-${1}s | sed -r "s#^.*ID: (${1})-?(input|output)?-([0-9]+), Name: (.*), Mute: (0|1)(.*)Volumes: \['([0-9]+)%'(, '[0-9]+%'])?,? ?(Default)?#AUDIO::\1-\2 id=\3 name=\"\4\" muted=\5 volume=\7 default=\9#g" | sed "s/${1}- /${1} / ; s/default=Default/default=1/" | ([[ -n $2 ]] && grep id=$2 || cat - )
 }
 
 function watch() {
-	emit sink @DEFAULT_SINK@
-	emit source @DEFAULT_SOURCE@
+
+	emit "sink"
+	emit "source"
 
 	pactl subscribe | grep --line-buffered "Event 'change' on sink\|Event 'change' on source" | while read -r line; do
 		if [[ $line =~ $pattern_event ]]; then
 			type="${BASH_REMATCH[1]}"
-			id="${BASH_REMATCH[2]}"
-			case "$type" in
-			sink)
-				id="@DEFAULT_SINK@"
-				;;
-			source)
-				id="@DEFAULT_SOURCE@"
-				;;
-			esac
+			input="${BASH_REMATCH[2]}"
+			id="${BASH_REMATCH[3]}"
 
 			emit $type $id
 		fi
 
 	done
-
 }
 
 watch

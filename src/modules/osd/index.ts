@@ -1,1 +1,1 @@
-export { VolumeOSD, MicrophoneOSD } from "./audio.js";
+export { VolumeOSD } from "./volume";

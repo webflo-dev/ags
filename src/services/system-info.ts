@@ -1,91 +1,75 @@
-import Service from "resource:///com/github/Aylur/ags/service.js";
-import Variable from "resource:///com/github/Aylur/ags/variable.js";
-import App from "resource:///com/github/Aylur/ags/app.js";
+import { ScriptOutput, watchScript } from "./script-service";
 
-const regex = new RegExp(/(\w+=("[^"]*"|[^ ]*))/g);
-
-function readOutputScript(input: string) {
-  const firstSeparator = input.indexOf(" ");
-
-  const signalName = input.substring(0, firstSeparator);
-
-  const values = input.substring(firstSeparator + 1);
-  const pairs = values.match(regex);
-  const info = {};
-  if (pairs) {
-    pairs.forEach((pair) => {
-      const [key, value] = pair.split("=");
-      info[key] = value.replace(/"/g, "");
-    });
-  }
-
-  return [signalName, info];
-}
-
-const propertyMapping = {
-  CPU: "cpu",
-  MEMORY: "memory",
-  GPU: "gpu",
+type Cpu = {
+  usage: number;
 };
 
-const properties = Object.values(propertyMapping);
+type Gpu = {
+  usage: number;
+};
 
-// service properties
-const serviceProperties = properties.reduce((accu, prop) => {
-  accu[prop] = ["jsobject"];
-  return accu;
-}, {});
+type Memory = {
+  total: number;
+  free: number;
+  used: number;
+};
 
-class SystemInfoService extends Service {
-  static {
-    Service.register(this, {}, serviceProperties);
-  }
+type Info<K extends string, T extends Cpu | Gpu | Memory> = {
+  notifyProp: K;
+  value: T;
+};
 
-  _info = {
-    cpu: {
-      usage: "0",
-    },
-    memory: {
-      total: "0",
-      free: "0",
-      used: "0",
-    },
-    gpu: {
-      usage: "0",
-    },
-  };
-  _var;
+const cpu = Variable<Cpu>({ usage: 0 });
+const gpu = Variable<Gpu>({ usage: 0 });
+const memory = Variable<Memory>({ total: 0, free: 0, used: 0 });
 
-  constructor() {
-    super();
-
-    this._var = Variable(["", {}], {
-      listen: [App.configDir + "/scripts/system.sh", readOutputScript],
-    });
-
-    this._var.connect("changed", ({ value }) => {
-      const [signalName, info] = value;
-      const propName = propertyMapping[signalName];
-      this._info[propName] = info;
-      this.notify(propName);
-    });
-  }
-
-  get cpu() {
-    return this._info.cpu;
-  }
-
-  get memory() {
-    return this._info.memory;
-  }
-
-  get gpu() {
-    return this._info.gpu;
-  }
-
-  dispose() {
-    this._var.dispose();
+function parse(
+  output: ScriptOutput
+): Info<"cpu", Cpu> | Info<"gpu", Gpu> | Info<"memory", Memory> | undefined {
+  switch (output.signal) {
+    case "CPU":
+      return {
+        notifyProp: "cpu",
+        value: { usage: Number(output.datum.usage) },
+      };
+    case "GPU":
+      return {
+        notifyProp: "gpu",
+        value: { usage: Number(output.datum.usage) },
+      };
+    case "MEMORY":
+      return {
+        notifyProp: "memory",
+        value: {
+          total: Number(output.datum.total),
+          free: Number(output.datum.free),
+          used: Number(output.datum.used),
+        },
+      };
+    default:
+      return undefined;
   }
 }
 
-export default new SystemInfoService();
+watchScript("system.sh", parse, (signal, values) => {
+  if (!values) return;
+  const { notifyProp, value } = values;
+
+  switch (notifyProp) {
+    case "cpu":
+      cpu.setValue(value);
+      break;
+    case "gpu":
+      gpu.setValue(value);
+      break;
+    case "memory":
+      memory.setValue(value);
+      break;
+  }
+});
+
+export const SystemInfo = {
+  cpu,
+  gpu,
+  memory,
+};

@@ -1,0 +1,127 @@
+$accent: $color_lime;
+$bg_color: $bg_normal;
+$fg_color: $fg_normal;
+$radius: 8px;
+
+#notification-center {
+  .notification-center {
+    min-width: 600px;
+    min-height: 600px;
+    padding: 1.5rem;
+
+    border: 2px solid $accent;
+    border-radius: $radius;
+    background-color: $bg_color;
+    color: $fg_color;
+  }
+
+  .header {
+    margin: 1.1rem 1rem;
+
+    .dnd {
+      background-color: $color_light_gray;
+      color: $bg_color;
+      border-radius: 12px;
+      padding: 0.5rem;
+      label {
+        color: $bg_color;
+      }
+      &:hover {
+        background-color: $fg_color;
+      }
+
+      &.on {
+        color: $bg_color;
+        background-color: $accent;
+      }
+    }
+
+    .clear {
+      background-color: $color_light_gray;
+      color: $bg_color;
+      border-radius: 12px;
+      padding: 0.5rem;
+      label {
+        color: $bg_color;
+      }
+      &:hover {
+        background-color: $fg_color;
+      }
+    }
+  }
+
+  .notification {
+    background-color: #262a2e;
+
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 0.5em;
+    // border: 1px solid $color_gray;
+
+    &.critical {
+      border: 1px solid $color_red;
+    }
+
+    .title {
+      // font-size: 1.4em;
+      color: $color_light_gray;
+      margin-bottom: 1rem;
+    }
+
+    .time {
+      font-weight: bold;
+      color: $color_light_gray;
+    }
+
+    .icon {
+      margin-right: 1rem;
+
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      min-width: 78px;
+      min-height: 78px;
+    }
+
+    .close-button {
+      margin-left: 1rem;
+      font-size: 16px;
+
+      &:hover,
+      &:focus {
+        background-color: $color_red;
+        border-radius: 50%;
+      }
+
+      &:active {
+        background-color: darken($color_red, 10%);
+      }
+    }
+
+    .actions {
+      .action {
+        // margin: 1rem 0.4rem 0 0.4rem;
+        margin: 1rem 0.4rem 0px 0.4rem;
+
+        background-color: $color_gray;
+        border-radius: 8px;
+        padding: 0.5rem;
+
+        &:hover {
+          background-color: $color_light_gray;
+          label {
+            color: $bg_color;
+          }
+        }
+      }
+    }
+
+    // .actions .action:first-child {
+    //   margin-left: 0;
+    // }
+
+    // .actions .action:last-child {
+    //   margin-right: 0;
+    // }
+  }
+}

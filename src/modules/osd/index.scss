@@ -1,0 +1,40 @@
+#osd {
+  .overlay {
+    padding: 2px;
+  }
+
+  .progress-bar {
+    @mixin color($bg: $color_sky, $fg: $bg_normal) {
+      background-color: $bg;
+      color: $fg;
+    }
+
+    margin: 8px;
+    border: 2px solid $color_sky;
+    background-color: $bg_normal;
+    border-radius: 8px;
+
+    padding: 4px;
+
+    image {
+      @include color;
+
+      padding-top: 15px;
+      padding-bottom: 10px;
+      border-top: 2px solid $bg_normal;
+    }
+
+    .fill {
+      @include color;
+      $radiis: 8px - 4px;
+      border-radius: $radiis $radiis 0 0;
+    }
+
+    &.muted {
+      .fill,
+      image {
+        @include color($color_red);
+      }
+    }
+  }
+}

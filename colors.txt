@@ -1,0 +1,27 @@
+        # black
+#1d1f21,#626861
+
+        # red
+#cf3746,#d95473
+
+        # green
+#7cbd27,#b6da74
+
+        # yellow
+#ecbd10,#e7ca62
+
+        # blue
+#277ab6,#64a8d8
+
+        # magenta
+#ad4ed2,#bc82d3
+
+        # cyan
+#32b5c7,#65cedc
+
+        # white
+#d8e2e1,#ebf6f5
+
+        # fg/bg
+#b6beca,#171a1f
+

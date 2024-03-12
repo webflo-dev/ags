@@ -1,136 +1,92 @@
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import App from "resource:///com/github/Aylur/ags/app.js";
-import Applications from "resource:///com/github/Aylur/ags/service/applications.js";
-import { PopupWindow } from "~/widgets";
-import { icons } from "~/icons";
+import { PopupWindow } from "@widgets";
+import { Application } from "types/service/applications";
 
-const AppItem = (app) => {
-  const NoDescription = () =>
-    Widget.Label({
-      class_name: "title",
-      label: app.name,
-      xalign: 0,
-      vpack: "center",
-      ellipsize: 3,
-    });
-
-  const WithDescription = () =>
-    Widget.Box({
-      vertical: true,
-      vpack: "center",
-      children: [
-        Widget.Label({
-          class_name: "title",
-          label: app.name,
-          xalign: 0,
-          vpack: "center",
-          ellipsize: 3,
-        }),
-        Widget.Label({
-          class_name: "description",
-          label: app.description,
-          wrap: true,
-          xalign: 0,
-          justification: "left",
-          vpack: "center",
-        }),
-      ],
-    });
-
-  return Widget.Button({
-    class_name: "app",
-    on_clicked: () => {
-      launchApp(app);
-    },
-    child: Widget.Box({
-      children: [
-        Widget.Icon({
-          icon: app.iconName || "application-default-icon",
-          size: 48,
-        }),
-        !app.description ? NoDescription() : WithDescription(),
-      ],
-    }),
-  });
-};
-
-const Search = ({ onUpdate }) =>
-  Widget.Entry({
-    hexpand: true,
-    text: "---",
-    placeholder_text: "Search",
-    on_accept: ({ text }) => {
-      const list = Applications.query(text ?? "");
-      if (list.length > 0) {
-        launchApp(list[0]);
-      }
-    },
-    on_change: ({ text }) => {
-      const filteredApps = Applications.query(text ?? "").map(AppItem);
-      onUpdate(filteredApps);
-    },
-  });
-
-const List = () =>
-  Widget.Box({
-    vertical: true,
-  });
-
-const Applauncher = () => {
-  const list = List();
-
-  const searchInput = Search({
-    onUpdate: (apps) => {
-      list.children = apps;
-      list.show_all();
-    },
-  });
-
-  return Widget.Box({
-    class_name: "app-launcher",
-    properties: [["list", list]],
-    vertical: true,
-    children: [
-      Widget.Box({
-        class_name: "search",
-        children: [
-          Widget.Label({ class_name: "icon", label: icons.search }),
-          searchInput,
-        ],
-      }),
-      Widget.Scrollable({
-        hscroll: "never",
-        child: Widget.Box({
-          vertical: true,
-          children: [list],
-        }),
-      }),
-    ],
-
-    connections: [
-      [
-        App,
-        (_, name, visible) => {
-          if (name !== WINDOW_NAME) return;
-
-          searchInput.set_text("");
-          if (visible) searchInput.grab_focus();
-        },
-      ],
-    ],
-  });
-};
+const { query } = await Service.import("applications");
 
 const WINDOW_NAME = "app-launcher";
 
-function launchApp(app) {
-  App.closeWindow(WINDOW_NAME);
-  app.launch();
-  // app.frequency += 1;
-}
-
-export const AppLauncher = () =>
-  PopupWindow({
-    name: WINDOW_NAME,
-    child: Applauncher(),
+const AppItem = (app: Application) =>
+  Widget.Button({
+    onClicked: () => {
+      App.closeWindow(WINDOW_NAME);
+      app.launch();
+    },
+    attribute: { app },
+    className: "app-item",
+    child: Widget.Box({
+      children: [
+        Widget.Icon({
+          className: "icon",
+          icon: app.icon_name || "application-default-icon",
+          // size: 42,
+        }),
+        Widget.Label({
+          className: "title",
+          label: app.name,
+          xalign: 0,
+          vpack: "center",
+          truncate: "end",
+        }),
+      ],
+    }),
   });
+
+const _Applauncher = () => {
+  let applications = query("").map(AppItem);
+
+  const list = Widget.Box({
+    vertical: true,
+    children: applications,
+  });
+
+  function repopulate() {
+    applications = query("").map(AppItem);
+    list.children = applications;
+  }
+
+  const entry = Widget.Entry({
+    hexpand: true,
+    className: "entry",
+    onAccept: () => {
+      if (applications[0]) {
+        App.toggleWindow(WINDOW_NAME);
+        applications[0].attribute.app.launch();
+      }
+    },
+    onChange: ({ text }) =>
+      applications.forEach((item) => {
+        item.visible = item.attribute.app.match(text ?? "");
+      }),
+  });
+
+  return Widget.Box({
+    vertical: true,
+    className: "app-launcher",
+    children: [
+      entry,
+      Widget.Scrollable({
+        hscroll: "never",
+        className: "list-container",
+        child: list,
+      }),
+    ],
+    setup: (self) =>
+      self.hook(App, (_, windowName, visible) => {
+        if (windowName !== WINDOW_NAME) return;
+
+        if (visible) {
+          repopulate();
+          entry.text = "";
+          entry.grab_focus();
+        }
+      }),
+  });
+};
+
+export const AppLauncher = () => {
+  return PopupWindow({
+    name: WINDOW_NAME,
+    layout: "center",
+    child: _Applauncher(),
+  });
+};

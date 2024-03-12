@@ -1,56 +1,59 @@
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { Date, Time } from "./date-time";
-import { Workspaces } from "./workspaces";
-import { SysTray } from "./systray";
-import { Audio } from "./audio";
+import { DateTime } from "./date-time";
+import { Workspaces } from "./workspace";
 import { SystemInfo } from "./system-info";
-import { ScreenshotIndicator } from "./screenshot";
-import { ScreenrecordIndicator } from "./screenrecord";
-import { NotificationIndicator } from "./notification";
-import { Mpris } from "./mpris";
+import { Systray } from "./systray";
+import { Audio } from "./audio";
+import { NotificationIndicator } from "./notification-indicator";
+import { Battery } from "./battery";
 
-const Left = () =>
+const StartWidget = () =>
   Widget.Box({
-    class_name: "left",
+    className: "left",
     spacing: 8,
-    children: [Workspaces(), Mpris()],
+    children: [Workspaces() /*, Mpris()*/],
   });
 
-const Center = () =>
+const CenterWidget = () =>
   Widget.Box({
     spacing: 8,
-    class_name: "middle",
+    className: "middle",
+    hpack: "center",
     children: [
-      Date(),
-      Time(),
-      ScreenrecordIndicator(),
-      ScreenshotIndicator(),
-      NotificationIndicator(),
+      DateTime(),
+      // Date(),
+      // Time(),
+      // ScreenrecordIndicator(),
+      // ScreenshotIndicator(),
     ],
   });
 
-const Right = () =>
+const EndWidget = () =>
   Widget.Box({
-    class_name: "right",
+    className: "right",
     spacing: 8,
-    children: [Widget.Box({ hexpand: true }), Audio(), SysTray(), SystemInfo()],
+    children: [
+      NotificationIndicator(),
+      Widget.Box({
+        hpack: "end",
+        hexpand: true,
+        spacing: 8,
+        children: [Systray(), Audio(), SystemInfo(), Battery()],
+      }),
+    ],
   });
 
-type BarProps = {
-  monitor?: number;
-};
-
-export const Bar = ({ monitor = 0 }: BarProps = {}) =>
+export const TopBar = () =>
   Widget.Window({
-    name: `bar-${monitor}`,
-    class_name: "bar",
-    exclusive: true,
-    monitor,
+    name: "bar",
+    className: "bar",
+    exclusivity: "exclusive",
     anchor: ["top", "left", "right"],
+    margins: [5, 20, 0, 20],
     child: Widget.CenterBox({
-      class_name: "bar",
-      start_widget: Left(),
-      center_widget: Center(),
-      end_widget: Right(),
+      spacing: 8,
+      // className: "bar",
+      startWidget: StartWidget(),
+      centerWidget: CenterWidget(),
+      endWidget: EndWidget(),
     }),
   });

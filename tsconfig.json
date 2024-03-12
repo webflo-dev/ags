@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     // "module": "ES2022",
-    "module": "NodeNext",
+    "module": "ESNext",
     "moduleResolution": "NodeNext",
     "lib": ["dom", "ES2022"],
     "allowJs": false,
@@ -10,17 +10,17 @@
     "strict": true,
     "noImplicitAny": false,
     "baseUrl": ".",
-    "typeRoots": ["./types", "./node_modules/@girs"],
+    "typeRoots": ["./types"],
     "skipLibCheck": true,
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/types/*": ["./types/*"],
-      "~/services": ["./src/services/index.ts"],
-      "~/modules/*": ["./src/modules/*"],
-      "~/icons": ["./src/icons.ts"],
-      "~/utils": ["./src/utils.ts"],
-      "~/widgets": ["./src/widgets/index.ts"]
+      // "@types/*": ["./types/*"],
+      "@services": ["./src/services/index.ts"],
+      "@modules/*": ["./src/modules/*"],
+      // "@icons": ["./src/icons.ts"],
+      "@utils": ["./src/utils.ts"],
+      "@widgets": ["./src/widgets/index.ts"]
     }
   }
   //"include": ["./src/**/*.ts*"]

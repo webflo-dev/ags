@@ -1,56 +1,55 @@
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { icons } from "~/icons";
-import { SystemInfoService } from "~/services";
+import { SystemInfo as SystemInfoService } from "@services";
+import { clsx } from "clsx";
+import type { Binding } from "types/service";
 
-type Level = "normal" | "warning" | "critical";
-
-function getLevel(value: number): Level {
-  if (value >= 70 && value < 90) return "warning";
-  if (value >= 90) return "critical";
-  return "normal";
+const levels = [
+  { thresold: 90, value: "critical" },
+  { thresold: 70, value: "warning" },
+] as const;
+function getLevel(value: string) {
+  const current = Number(value);
+  return levels.find(({ thresold }) => current >= thresold)?.value;
 }
 
-const System = (
-  signalName: string,
+function SystemModule(
   icon: string,
-  transform: (data: any) => string
-) => {
-  const childLabel = Widget.Label({
-    label: "---",
-    class_name: "text monospace",
-  });
-  const childIcon = Widget.Label({
-    class_name: "icon",
-    label: icon,
-  });
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  binding: Binding<any, any, string>
+) {
   return Widget.Box({
     spacing: 8,
-    children: icon ? [childIcon, childLabel] : [childLabel],
-    connections: [
-      [
-        SystemInfoService,
-        (self) => {
-          const data = SystemInfoService[signalName];
-          const value = transform(data);
-          childLabel.label = `${value.padStart(2, " ")}%`;
-          self.class_name = getLevel(Number.parseFloat(value));
-        },
-        `notify::${signalName}`,
-      ],
-    ],
-  });
-};
-
-export const SystemInfo = () =>
-  Widget.Box({
-    class_name: "system-info",
-    spacing: 24,
+    className: binding.as((v) => {
+      return clsx("info", getLevel(v));
+    }),
     children: [
-      System("cpu", icons.cpu, ({ usage }) => usage),
-      System("memory", icons.memory, ({ total, used }) =>
-        Math.floor((used / total) * 100).toString()
-      ),
-      System("gpu", icons.gpu, ({ usage }) => usage),
+      Widget.Icon({ icon }),
+      Widget.Label({
+        label: binding.as((v) => `${v.padStart(2, " ")}%`),
+      }),
     ],
   });
+}
+
+export function SystemInfo() {
+  return Widget.Box({
+    name: "system-info",
+    spacing: 24,
+
+    children: [
+      SystemModule(
+        "_processor-symbolic",
+        SystemInfoService.cpu.bind().as(({ usage }) => `${usage}`)
+      ),
+      SystemModule(
+        "_memory-symbolic",
+        SystemInfoService.memory
+          .bind()
+          .as(({ used, total }) => Math.floor((used / total) * 100).toString())
+      ),
+      SystemModule(
+        "_gpu-symbolic",
+        SystemInfoService.gpu.bind().as(({ usage }) => `${usage}`)
+      ),
+    ],
+  });
+}

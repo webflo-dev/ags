@@ -1,80 +1,62 @@
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import Audio from "resource:///com/github/Aylur/ags/service/audio.js";
-import { icons } from "~/icons";
+import { Audio as AudioService } from "@services";
+import { clsx } from "clsx";
 
-const Volume = () => {
-  const childIcon = Widget.Label({
-    label: icons.volume.normal,
-    class_name: "icon",
-  });
-
-  const childLabel = Widget.Label({
-    label: "---",
-    class_name: "text monospace",
-  });
-
-  return Widget.Box({
-    class_name: "volume",
-    spacing: 8,
-    children: [childIcon, childLabel],
-    connections: [
-      [
-        Audio,
-        (self) => {
-          if (!Audio.speaker) return;
-
-          const muted = Audio.speaker.stream.is_muted;
-          const volume = Math.round(Audio.speaker.volume * 100);
-
-          childLabel.label = `${volume.toString().padStart(3, " ")}%`;
-
-          if (muted === true) {
-            self.toggleClassName("muted", true);
-            childIcon.label = icons.volume.muted;
-          } else {
-            self.toggleClassName("muted", false);
-            childIcon.label = icons.volume.normal;
-          }
-        },
-        "speaker-changed",
+function Microphone() {
+  return Widget.EventBox({
+    onPrimaryClick: () => {
+      Utils.execAsync("volume --toggle-mic");
+    },
+    tooltip_markup: AudioService.microphones.defaultMicrophone.bind("name"),
+    child: Widget.Box({
+      className: AudioService.microphones.defaultMicrophone
+        .bind("muted")
+        .as((muted) => `microphone ${clsx({ muted })}`),
+      spacing: 8,
+      children: [
+        Widget.Icon({
+          icon: AudioService.microphones.defaultMicrophone
+            .bind("muted")
+            .as((muted) =>
+              muted ? "_microphone-slash-symbolic" : "_microphone-symbolic"
+            ),
+        }),
       ],
-    ],
+    }),
   });
-};
+}
 
-const Microphone = () =>
+function Volume() {
+  return Widget.EventBox({
+    onPrimaryClick: () => {
+      Utils.execAsync("volume --toggle");
+    },
+    tooltip_markup: AudioService.speakers.defaultSpeaker.bind("name"),
+    child: Widget.Box({
+      className: AudioService.speakers.defaultSpeaker
+        .bind("muted")
+        .as((muted) => `volume ${clsx({ muted })}`),
+      spacing: 8,
+      children: [
+        Widget.Icon({
+          icon: AudioService.speakers.defaultSpeaker
+            .bind("muted")
+            .as((muted) =>
+              muted ? "_volume-slash-symbolic" : "_volume-symbolic"
+            ),
+        }),
+        Widget.Label({
+          label: AudioService.speakers.defaultSpeaker
+            .bind("volume")
+            .as((volume) => `${volume.toString().padStart(3, " ")}%`),
+        }),
+      ],
+    }),
+  });
+}
+
+export const Audio = () =>
   Widget.Box({
-    class_name: "microphone",
-    children: [
-      Widget.Label({
-        label: icons.microphone.normal,
-        class_name: "icon",
-        connections: [
-          [
-            Audio,
-            (self) => {
-              const muted = Audio.microphone?.stream.is_muted;
-              if (muted === true) {
-                self.label = icons.microphone.muted;
-                self.toggleClassName("muted", true);
-              } else {
-                self.label = icons.microphone.normal;
-                self.toggleClassName("muted", false);
-              }
-            },
-            "microphone-changed",
-          ],
-        ],
-      }),
-    ],
-  });
-
-const AudioModule = () => {
-  return Widget.Box({
-    class_name: "audio",
+    name: "audio",
     spacing: 12,
     children: [Microphone(), Volume()],
   });
-};
-
-export { AudioModule as Audio };

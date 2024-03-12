@@ -1,0 +1,163 @@
+@mixin module {
+  padding: 6px 12px;
+  // border-radius: 12px;
+  border-radius: 8px;
+  border: 1px solid $color_gray;
+  background-color: $bg_normal_transparent;
+
+  image {
+    font-size: 1.5rem;
+    color: $color_yellow;
+  }
+}
+
+#bar {
+  #date-time {
+    @include module;
+
+    image {
+      color: $color_yellow;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+  }
+
+  #workspaces {
+    @include module;
+
+    .workspace {
+      padding: 0px 3px;
+      transition: color 0.2s ease;
+
+      image {
+        color: $color_gray;
+      }
+
+      &.active {
+        image {
+          color: $color_yellow;
+        }
+      }
+
+      &.occupied:not(.active) {
+        image {
+          color: $color_sky;
+        }
+      }
+    }
+  }
+
+  #system-info {
+    @include module;
+
+    .info {
+      & > label {
+        @include font-monospace;
+      }
+
+      image {
+        color: $color_green;
+      }
+
+      &.warning {
+        color: $color_orange;
+        image {
+          color: $color_orange;
+        }
+      }
+
+      &.critical {
+        background-color: $color_red;
+        color: $color_light;
+        image {
+          color: $color_light;
+        }
+      }
+    }
+  }
+
+  #systray {
+    @include module;
+    font-size: 1.5rem;
+  }
+
+  #audio {
+    @include module;
+
+    label {
+      @include font-monospace;
+    }
+
+    image {
+      color: $color_yellow;
+    }
+
+    .muted {
+      & > label,
+      & > image {
+        color: $color_orange;
+      }
+    }
+  }
+
+  #notification-indicator {
+    button {
+      @include module;
+    }
+
+    image {
+      color: $color_yellow;
+    }
+
+    &.empty {
+      image {
+        color: $color_gray;
+      }
+    }
+
+    .summary {
+      margin-left: 8px;
+    }
+  }
+
+  #battery {
+    @include module;
+
+    label {
+      @include font-monospace;
+    }
+
+    image {
+      color: $color_yellow;
+    }
+
+    &.low,
+    &.empty {
+      background-color: $color_red;
+      label {
+        color: $color_light;
+      }
+      image {
+        color: $color_light;
+      }
+    }
+
+    &.quarter {
+      background-color: $color_orange;
+      label {
+        color: $color_dark;
+      }
+      image {
+        color: $color_dark;
+      }
+    }
+
+    &.charging {
+      image {
+        color: $color_green;
+      }
+    }
+  }
+}

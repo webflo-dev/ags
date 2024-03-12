@@ -1,61 +1,34 @@
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { icons } from "~/icons";
-import GLib from "gi://GLib";
-import type { Props } from "types/widgets/label";
-import { FontIcon } from "~/widgets";
+import GLib from "gi://GLib?version=2.0";
 
-type BaseProps = Props & { name: string; icon: string };
-const Base = ({ name, icon, ...labelProps }: BaseProps) => {
-  const label = Widget.Label({
-    vpack: "baseline",
-    ...labelProps,
-  });
+const Date = Widget.Label();
+const Time = Widget.Label();
 
-  const children = icon
-    ? [
-        // Widget.Label({
-        //   class_name: "icon",
-        //   vpack: "baseline",
-        //   label: icon,
-        // }),
-        FontIcon({ icon }),
-        label,
-      ]
-    : [label];
-
+export function DateTime() {
   return Widget.Box({
-    name,
-    class_name: "module",
+    name: "date-time",
     spacing: 8,
-    vpack: "baseline",
-    children,
-  });
-};
-
-export const Date = () =>
-  Base({
-    name: "module-date",
-    class_name: "date",
-    icon: icons.calendar,
-    connections: [
-      [
-        1000,
-        (label) =>
-          (label.label = GLib.DateTime.new_now_local().format("%H:%M") || ""),
+    child: Widget.Box({
+      className: "date-time",
+      spacing: 16,
+      children: [
+        Widget.Box({
+          className: "date",
+          spacing: 8,
+          children: [Widget.Icon({ icon: "_calendar-day-symbolic" }), Date],
+        }),
+        Widget.Box({
+          className: "time",
+          spacing: 8,
+          children: [Widget.Icon({ icon: "_clock-symbolic" }), Time],
+        }),
       ],
-    ],
+      setup: (self) => {
+        self.poll(1000, () => {
+          const now = GLib.DateTime.new_now_local();
+          Date.label = now.format("%A %d %B") || "";
+          Time.label = now.format("%H:%M") || "";
+        });
+      },
+    }),
   });
-
-export const Time = () =>
-  Base({
-    name: "module-time",
-    class_name: "time",
-    icon: icons.clock,
-    label: GLib.DateTime.new_now_local().format("%A %d %B"),
-  });
-
-export const l = () =>
-  Widget.Box({
-    spacing: 8,
-    children: [Date(), Time()],
-  });
+}
