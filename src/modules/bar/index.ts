@@ -4,6 +4,7 @@ import { SystemInfo } from "./system-info";
 import { Systray } from "./systray";
 import { Audio } from "./audio";
 import { NotificationIndicator } from "./notification-indicator";
+import { Battery } from "./battery";
 
 const StartWidget = () =>
   Widget.Box({
@@ -36,7 +37,7 @@ const EndWidget = () =>
         hpack: "end",
         hexpand: true,
         spacing: 8,
-        children: [Systray(), Audio(), SystemInfo()],
+        children: [Systray(), Audio(), SystemInfo(), Battery()],
       }),
     ],
   });

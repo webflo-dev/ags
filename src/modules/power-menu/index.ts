@@ -1,4 +1,3 @@
-import { FontIcon } from "@widgets";
 import { BoxProps } from "types/widgets/box";
 
 const WINDOW_NAME = "power-menu";
@@ -14,19 +13,19 @@ const Actions: ReadonlyArray<Action> = <const>[
     cmd: "loginctl terminate-session self",
     label: "Log Out",
     key: "logout",
-    icon: "logout",
+    icon: "_logout-symbolic",
   },
   {
     cmd: "systemctl reboot",
     label: "Reboot",
     key: "reboot",
-    icon: "reboot",
+    icon: "_reboot-symbolic",
   },
   {
     cmd: "systemctl poweroff",
     label: "Shutdown",
     key: "shutdown",
-    icon: "power-off",
+    icon: "_power-off-symbolic",
   },
 ];
 
@@ -57,7 +56,10 @@ function ActionButton({ action, onClicked }: ActionButtonProps) {
       spacing: 8,
       vertical: true,
       vpack: "center",
-      children: [FontIcon({ icon: action.icon }), Widget.Label(action.label)],
+      children: [
+        Widget.Icon({ icon: action.icon }),
+        Widget.Label(action.label),
+      ],
     }),
   });
 }
@@ -83,7 +85,7 @@ function PowerMenuConfirm({ onCancel, onConfirm }: PowerMenuConfirmProps) {
         hpack: "center",
         spacing: 16,
         children: [
-          FontIcon({
+          Widget.Icon({
             icon: actionToConfirm.bind("value").as((v) => v?.icon || ""),
           }),
           Widget.Label({

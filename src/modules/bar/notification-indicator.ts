@@ -1,4 +1,3 @@
-import { FontIcon } from "@widgets";
 import { clsx } from "clsx";
 import type { Notification } from "types/service/notifications";
 
@@ -13,7 +12,7 @@ export function NotificationIndicator() {
   const _dnd = notifications.bind("dnd");
   const _notifications = notifications.bind("notifications");
 
-  const messageIcon = FontIcon();
+  const messageIcon = Widget.Icon();
   const messageLabel = Widget.Label();
 
   return Widget.Box({
@@ -28,8 +27,10 @@ export function NotificationIndicator() {
       Widget.Button({
         child: Widget.Box({
           children: [
-            FontIcon({
-              icon: _dnd.as((dnd) => (dnd ? "dnd" : "notification")),
+            Widget.Icon({
+              icon: _dnd.as((dnd) =>
+                dnd ? "_dnd-symbolic" : "_notification-symbolic"
+              ),
             }),
             Widget.Revealer({
               transitionDuration: 500,

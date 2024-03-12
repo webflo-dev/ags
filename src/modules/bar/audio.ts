@@ -1,4 +1,3 @@
-import { FontIcon } from "@widgets";
 import { Audio as AudioService } from "@services";
 import { clsx } from "clsx";
 
@@ -14,10 +13,12 @@ function Microphone() {
         .as((muted) => `microphone ${clsx({ muted })}`),
       spacing: 8,
       children: [
-        FontIcon({
+        Widget.Icon({
           icon: AudioService.microphones.defaultMicrophone
             .bind("muted")
-            .as((muted) => (muted ? "microphone-slash" : "microphone")),
+            .as((muted) =>
+              muted ? "_microphone-slash-symbolic" : "_microphone-symbolic"
+            ),
         }),
       ],
     }),
@@ -36,10 +37,12 @@ function Volume() {
         .as((muted) => `volume ${clsx({ muted })}`),
       spacing: 8,
       children: [
-        FontIcon({
+        Widget.Icon({
           icon: AudioService.speakers.defaultSpeaker
             .bind("muted")
-            .as((muted) => (muted ? "volume-slash" : "volume")),
+            .as((muted) =>
+              muted ? "_volume-slash-symbolic" : "_volume-symbolic"
+            ),
         }),
         Widget.Label({
           label: AudioService.speakers.defaultSpeaker

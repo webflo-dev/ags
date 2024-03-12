@@ -4,20 +4,18 @@
   border-radius: 8px;
   border: 1px solid $color_gray;
   background-color: $bg_normal_transparent;
-}
 
-.font-icon {
-  font-size: 1.5rem;
+  image {
+    font-size: 1.5rem;
+    color: $color_yellow;
+  }
 }
 
 #bar {
-  // border-top: 1px solid red;
-  // border-bottom: 1px solid red;
-
   #date-time {
     @include module;
 
-    .font-icon {
+    image {
       color: $color_yellow;
     }
 
@@ -31,15 +29,22 @@
 
     .workspace {
       padding: 0px 3px;
-      color: $color_gray;
       transition: color 0.2s ease;
 
+      image {
+        color: $color_gray;
+      }
+
       &.active {
-        color: $color_yellow;
+        image {
+          color: $color_yellow;
+        }
       }
 
       &.occupied:not(.active) {
-        color: $color_sky;
+        image {
+          color: $color_sky;
+        }
       }
     }
   }
@@ -52,15 +57,23 @@
         @include font-monospace;
       }
 
-      color: $color_green;
+      image {
+        color: $color_green;
+      }
 
       &.warning {
         color: $color_orange;
+        image {
+          color: $color_orange;
+        }
       }
 
       &.critical {
         background-color: $color_red;
         color: $color_light;
+        image {
+          color: $color_light;
+        }
       }
     }
   }
@@ -77,14 +90,14 @@
       @include font-monospace;
     }
 
-    .font-icon {
+    image {
       color: $color_yellow;
     }
 
     .muted {
       & > label,
-      & > .font-icon {
-        color: $color_red;
+      & > image {
+        color: $color_orange;
       }
     }
   }
@@ -94,18 +107,57 @@
       @include module;
     }
 
-    .font-icon {
+    image {
       color: $color_yellow;
     }
 
     &.empty {
-      .font-icon {
+      image {
         color: $color_gray;
       }
     }
 
     .summary {
       margin-left: 8px;
+    }
+  }
+
+  #battery {
+    @include module;
+
+    label {
+      @include font-monospace;
+    }
+
+    image {
+      color: $color_yellow;
+    }
+
+    &.low,
+    &.empty {
+      background-color: $color_red;
+      label {
+        color: $color_light;
+      }
+      image {
+        color: $color_light;
+      }
+    }
+
+    &.quarter {
+      background-color: $color_orange;
+      label {
+        color: $color_dark;
+      }
+      image {
+        color: $color_dark;
+      }
+    }
+
+    &.charging {
+      image {
+        color: $color_green;
+      }
     }
   }
 }

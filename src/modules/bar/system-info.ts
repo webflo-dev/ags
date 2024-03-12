@@ -1,5 +1,4 @@
 import { SystemInfo as SystemInfoService } from "@services";
-import { FontIcon } from "@widgets";
 import { clsx } from "clsx";
 import type { Binding } from "types/service";
 
@@ -23,7 +22,7 @@ function SystemModule(
       return clsx("info", getLevel(v));
     }),
     children: [
-      FontIcon({ icon }),
+      Widget.Icon({ icon }),
       Widget.Label({
         label: binding.as((v) => `${v.padStart(2, " ")}%`),
       }),
@@ -38,17 +37,17 @@ export function SystemInfo() {
 
     children: [
       SystemModule(
-        "processor",
+        "_processor-symbolic",
         SystemInfoService.cpu.bind().as(({ usage }) => `${usage}`)
       ),
       SystemModule(
-        "memory",
+        "_memory-symbolic",
         SystemInfoService.memory
           .bind()
           .as(({ used, total }) => Math.floor((used / total) * 100).toString())
       ),
       SystemModule(
-        "gpu",
+        "_gpu-symbolic",
         SystemInfoService.gpu.bind().as(({ usage }) => `${usage}`)
       ),
     ],

@@ -1,4 +1,3 @@
-import { FontIcon } from "@widgets";
 import GLib from "gi://GLib?version=2.0";
 
 const Date = Widget.Label();
@@ -15,12 +14,12 @@ export function DateTime() {
         Widget.Box({
           className: "date",
           spacing: 8,
-          children: [FontIcon({ icon: "calendar-day" }), Date],
+          children: [Widget.Icon({ icon: "_calendar-day-symbolic" }), Date],
         }),
         Widget.Box({
           className: "time",
           spacing: 8,
-          children: [FontIcon({ icon: "clock" }), Time],
+          children: [Widget.Icon({ icon: "_clock-symbolic" }), Time],
         }),
       ],
       setup: (self) => {
