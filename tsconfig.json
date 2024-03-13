@@ -20,7 +20,8 @@
       "@modules/*": ["./src/modules/*"],
       // "@icons": ["./src/icons.ts"],
       "@utils": ["./src/utils.ts"],
-      "@widgets": ["./src/widgets/index.ts"]
+      "@widgets": ["./src/widgets/index.ts"],
+      "@icons": ["./src/icons.ts"]
     }
   }
   //"include": ["./src/**/*.ts*"]

@@ -1,4 +1,5 @@
 import { BoxProps } from "types/widgets/box";
+import icons from "@icons";
 
 const WINDOW_NAME = "power-menu";
 
@@ -13,19 +14,19 @@ const Actions: ReadonlyArray<Action> = <const>[
     cmd: "loginctl terminate-session self",
     label: "Log Out",
     key: "logout",
-    icon: "_logout-symbolic",
+    icon: icons.powerMenu.logout,
   },
   {
     cmd: "systemctl reboot",
     label: "Reboot",
     key: "reboot",
-    icon: "_reboot-symbolic",
+    icon: icons.powerMenu.reboot,
   },
   {
     cmd: "systemctl poweroff",
     label: "Shutdown",
     key: "shutdown",
-    icon: "_power-off-symbolic",
+    icon: icons.powerMenu.shutdown,
   },
 ];
 

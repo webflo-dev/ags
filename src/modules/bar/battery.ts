@@ -1,23 +1,25 @@
 import { clsx } from "clsx";
+import icons from "@icons";
 
 const battery = await Service.import("battery");
 const powerProfiles = await Service.import("powerprofiles");
 
 function getLevel(value: number) {
-  if (value < 5) return "empty";
-  if (value < 10) return "low";
-  if (value < 25) return "quarter";
-  if (value < 50) return "half";
-  if (value < 75) return "three-quarters";
-  return "full";
+  if (value < 5) return { key: "empty", icon: icons.battery.empty };
+  if (value < 10) return { key: "low", icon: icons.battery.low };
+  if (value < 25) return { key: "quarter", icon: icons.battery.quarter };
+  if (value < 50) return { key: "half", icon: icons.battery.half };
+  if (value < 75)
+    return { key: "three-quarters", icon: icons.battery.threeQuarters };
+  return { key: "full", icon: icons.battery.full };
 }
 
 function BatteryIcon() {
   return Widget.Icon().hook(battery, (widget) => {
     if (battery.charging || battery.charged) {
-      widget.icon = "_battery-bolt-symbolic";
+      widget.icon = icons.battery.charging;
     } else {
-      widget.icon = `_battery-${getLevel(battery.percent)}-symbolic`;
+      widget.icon = getLevel(battery.percent).icon;
     }
   });
 }
@@ -38,7 +40,7 @@ function PowerProfile() {
                   .bind("active_profile")
                   .as((activeProfile) => {
                     return profile.Profile === activeProfile
-                      ? "_check-symbolic"
+                      ? icons.ui.check
                       : "";
                   }),
               }),
@@ -57,16 +59,9 @@ function PowerProfile() {
       menu.popup_at_pointer(event);
     },
     child: Widget.Icon({
-      icon: powerProfiles.bind("active_profile").as((profile) => {
-        switch (profile) {
-          case "performance":
-            return "_gauge-max-symbolic";
-          case "power-saver":
-            return "_gauge-min-symbolic";
-          default:
-            return "_gauge-symbolic";
-        }
-      }),
+      icon: powerProfiles
+        .bind("active_profile")
+        .as((profile) => icons.powerProfiles[profile] || ""),
     }),
   });
 }
@@ -78,7 +73,7 @@ export function Battery() {
       const charging = battery.charging || battery.charged;
       return clsx({
         charging,
-        [getLevel(battery.percent)]: !charging,
+        [getLevel(battery.percent).key]: !charging,
       });
     }),
     visible: battery.bind("available"),

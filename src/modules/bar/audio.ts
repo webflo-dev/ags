@@ -1,5 +1,6 @@
 import { Audio as AudioService } from "@services";
 import { clsx } from "clsx";
+import icons from "@icons";
 
 function Microphone() {
   return Widget.EventBox({
@@ -17,7 +18,7 @@ function Microphone() {
           icon: AudioService.microphones.defaultMicrophone
             .bind("muted")
             .as((muted) =>
-              muted ? "_microphone-slash-symbolic" : "_microphone-symbolic"
+              muted ? icons.microphone.muted : icons.microphone.unmuted
             ),
         }),
       ],
@@ -40,9 +41,7 @@ function Volume() {
         Widget.Icon({
           icon: AudioService.speakers.defaultSpeaker
             .bind("muted")
-            .as((muted) =>
-              muted ? "_volume-slash-symbolic" : "_volume-symbolic"
-            ),
+            .as((muted) => (muted ? icons.volume.muted : icons.volume.unmuted)),
         }),
         Widget.Label({
           label: AudioService.speakers.defaultSpeaker

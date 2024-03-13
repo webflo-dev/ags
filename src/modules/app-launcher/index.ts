@@ -1,5 +1,6 @@
 import { PopupWindow } from "@widgets";
 import { Application } from "types/service/applications";
+import icons from "@icons";
 
 const { query } = await Service.import("applications");
 
@@ -17,7 +18,7 @@ const AppItem = (app: Application) =>
       children: [
         Widget.Icon({
           className: "icon",
-          icon: app.icon_name || "application-default-icon",
+          icon: app.icon_name || icons.defaultApplication,
           // size: 42,
         }),
         Widget.Label({

@@ -1,4 +1,5 @@
 import { SystemInfo as SystemInfoService } from "@services";
+import icons from "@icons";
 import { clsx } from "clsx";
 import type { Binding } from "types/service";
 
@@ -37,17 +38,17 @@ export function SystemInfo() {
 
     children: [
       SystemModule(
-        "_processor-symbolic",
+        icons.systemInfo.cpu,
         SystemInfoService.cpu.bind().as(({ usage }) => `${usage}`)
       ),
       SystemModule(
-        "_memory-symbolic",
+        icons.systemInfo.memory,
         SystemInfoService.memory
           .bind()
           .as(({ used, total }) => Math.floor((used / total) * 100).toString())
       ),
       SystemModule(
-        "_gpu-symbolic",
+        icons.systemInfo.gpu,
         SystemInfoService.gpu.bind().as(({ usage }) => `${usage}`)
       ),
     ],

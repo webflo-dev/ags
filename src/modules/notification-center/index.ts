@@ -1,5 +1,6 @@
 import GLib from "gi://GLib";
 import { PopupWindow } from "@widgets";
+import icons from "@icons";
 import { type Notification as Notif } from "types/service/notifications";
 
 const WINDOW_NAME = "notification-center";
@@ -14,14 +15,14 @@ function time(time: number, format = "%H:%M") {
 function Header() {
   const dndButton = Widget.Button({
     className: "dnd",
-    child: Widget.Icon({ icon: "_notification-symbolic" }),
+    child: Widget.Icon(),
     onClicked: () => (notifications.dnd = !notifications.dnd),
   }).hook(
     notifications,
     (self) => {
       self.child.icon = notifications.dnd
-        ? "_dnd-symbolic"
-        : "_notification-symbolic";
+        ? icons.notifications.dnd.enabled
+        : icons.notifications.dnd.disabled;
       self.toggleClassName("on", notifications.dnd);
     },
     "notify::dnd"
@@ -47,7 +48,7 @@ function Header() {
         child: Widget.Box({
           spacing: 8,
           children: [
-            Widget.Icon({ icon: "_clear-notifications-symbolic" }),
+            Widget.Icon({ icon: icons.notifications.clear }),
             Widget.Label({
               label: "Clear",
             }),
@@ -123,7 +124,7 @@ function Notification(notification: Notif) {
               Widget.Button({
                 className: "close-button",
                 vpack: "start",
-                child: Widget.Icon("window-close-symbolic"),
+                child: Widget.Icon(icons.ui.close),
                 onClicked: notification.close,
               }),
             ],

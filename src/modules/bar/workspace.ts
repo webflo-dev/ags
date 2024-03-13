@@ -1,3 +1,4 @@
+import icons from "@icons";
 import { clsx } from "clsx";
 
 const hyprland = await Service.import("hyprland");
@@ -17,7 +18,7 @@ export function Workspaces() {
             occupied: (hyprland.getWorkspace(id)?.windows || 0) > 0,
           })
         ),
-        child: Widget.Icon({ icon: `_circle-${id}-symbolic` }),
+        child: Widget.Icon({ icon: icons.workspace[id] }),
         onClicked: () => hyprland.messageAsync(`dispatch workspace ${id}`),
       })
     ),

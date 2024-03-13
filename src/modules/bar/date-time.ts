@@ -1,4 +1,5 @@
 import GLib from "gi://GLib?version=2.0";
+import icons from "@icons";
 
 const Date = Widget.Label();
 const Time = Widget.Label();
@@ -14,12 +15,12 @@ export function DateTime() {
         Widget.Box({
           className: "date",
           spacing: 8,
-          children: [Widget.Icon({ icon: "_calendar-day-symbolic" }), Date],
+          children: [Widget.Icon({ icon: icons.dateTime.calendar }), Date],
         }),
         Widget.Box({
           className: "time",
           spacing: 8,
-          children: [Widget.Icon({ icon: "_clock-symbolic" }), Time],
+          children: [Widget.Icon({ icon: icons.dateTime.clock }), Time],
         }),
       ],
       setup: (self) => {

@@ -1,3 +1,4 @@
+import icons from "@icons";
 import { clsx } from "clsx";
 import type { Notification } from "types/service/notifications";
 
@@ -29,7 +30,9 @@ export function NotificationIndicator() {
           children: [
             Widget.Icon({
               icon: _dnd.as((dnd) =>
-                dnd ? "_dnd-symbolic" : "_notification-symbolic"
+                dnd
+                  ? icons.notifications.dnd.enabled
+                  : icons.notifications.dnd.disabled
               ),
             }),
             Widget.Revealer({

@@ -1,5 +1,6 @@
 import { Progress } from "./progress";
 import { Audio } from "@services";
+import icons from "@icons";
 
 type OnScreenProgressProps = {
   vertical: boolean;
@@ -37,8 +38,8 @@ export function OnScreenProgress({ vertical, delay }: OnScreenProgressProps) {
     progressBar.toggleClassName("muted", Audio.speakers.defaultSpeaker.muted);
 
     indicator.icon = Audio.speakers.defaultSpeaker.muted
-      ? "_volume-slash-symbolic"
-      : "_volume-symbolic";
+      ? icons.volume.muted
+      : icons.volume.unmuted;
     progress.setValue(Audio.speakers.defaultSpeaker.volume);
 
     revealer.reveal_child = true;
