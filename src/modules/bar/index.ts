@@ -5,12 +5,14 @@ import { Systray } from "./systray";
 import { Audio } from "./audio";
 import { NotificationIndicator } from "./notification-indicator";
 import { Battery } from "./battery";
+import { Mpris } from "./mpris";
+import { ClientIndicator } from "./client-indicator";
 
 const StartWidget = () =>
   Widget.Box({
     className: "left",
     spacing: 8,
-    children: [Workspaces() /*, Mpris()*/],
+    children: [Workspaces(), ClientIndicator(), Mpris()],
   });
 
 const CenterWidget = () =>

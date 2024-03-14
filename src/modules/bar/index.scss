@@ -160,4 +160,22 @@
       }
     }
   }
+
+  #client-indicator {
+    @include module;
+
+    image.indicator {
+      color: $color_gray;
+
+      &.active {
+        color: $color_orange;
+      }
+
+      &.xwayland {
+        padding: 3px;
+        border-radius: 50%;
+        background-color: $color_blue;
+      }
+    }
+  }
 }
