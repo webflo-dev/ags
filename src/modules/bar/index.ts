@@ -7,6 +7,7 @@ import { NotificationIndicator } from "./notification-indicator";
 import { Battery } from "./battery";
 import { Mpris } from "./mpris";
 import { ClientIndicator } from "./client-indicator";
+import { ScreenshotIndicator } from "./screenshot-indicator";
 
 const StartWidget = () =>
   Widget.Box({
@@ -39,7 +40,13 @@ const EndWidget = () =>
         hpack: "end",
         hexpand: true,
         spacing: 8,
-        children: [Systray(), Audio(), SystemInfo(), Battery()],
+        children: [
+          ScreenshotIndicator(),
+          Systray(),
+          Audio(),
+          SystemInfo(),
+          Battery(),
+        ],
       }),
     ],
   });

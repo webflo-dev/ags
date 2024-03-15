@@ -6,6 +6,7 @@ import { AppLauncher } from "@modules/app-launcher";
 import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
 import { VolumeOSD } from "@modules/osd";
 import { NotificationCenter } from "@modules/notification-center";
+import { Screenshot as ScreenshotService } from "@services";
 
 async function start() {
   // const notifications = await Service.import("notifications");
@@ -34,7 +35,7 @@ async function start() {
   // Use for CLI calls
   globalThis.ags = { App };
   globalThis.powermenu = { toggle: togglePowerMenu };
-  // globalThis.screenshot = ScreenshotService;
+  globalThis.screenshot = ScreenshotService;
   // globalThis.screenrecord = ScreenrecordService;
 }
 

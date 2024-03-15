@@ -8,6 +8,7 @@ export default {
     floatingWindow: "_window-floating-symbolic",
     wayland: "_wayland-symbolic",
   },
+  camera: "_camera-symbolic",
   microphone: {
     muted: "_microphone-slash-symbolic",
     unmuted: "_microphone-symbolic",

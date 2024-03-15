@@ -1,13 +1,21 @@
-@mixin module {
+@mixin module(
+  $fg_icon: $color_yellow,
+  $fg: $color_light,
+  $bg: $bg_normal_transparent
+) {
   padding: 6px 12px;
   // border-radius: 12px;
   border-radius: 8px;
   border: 1px solid $color_gray;
-  background-color: $bg_normal_transparent;
+  background-color: $bg;
+
+  label {
+    color: $fg;
+  }
 
   image {
     font-size: 1.5rem;
-    color: $color_yellow;
+    color: $fg_icon;
   }
 }
 
@@ -15,25 +23,17 @@
   #date-time {
     @include module;
 
-    image {
-      color: $color_yellow;
-    }
-
     .time {
       font-weight: bold;
     }
   }
 
   #workspaces {
-    @include module;
+    @include module($color_gray);
 
     .workspace {
       padding: 0px 3px;
       transition: color 0.2s ease;
-
-      image {
-        color: $color_gray;
-      }
 
       &.active {
         image {
@@ -50,15 +50,11 @@
   }
 
   #system-info {
-    @include module;
+    @include module($color_lime);
 
     .info {
       & > label {
         @include font-monospace;
-      }
-
-      image {
-        color: $color_green;
       }
 
       &.warning {
@@ -177,5 +173,9 @@
         background-color: $color_blue;
       }
     }
+  }
+
+  #screenshot-indicator {
+    @include module($color_dark, $color_dark, $color_orange);
   }
 }
