@@ -25,8 +25,12 @@ function BatteryIcon() {
 }
 
 function PowerProfile() {
+  if (powerProfiles === undefined) {
+    return Widget.Box();
+  }
+
   const menu = Widget.Menu({
-    children: powerProfiles.bind("profiles").as((profiles) => {
+    children: powerProfiles?.bind("profiles").as((profiles) => {
       return profiles.map((profile) => {
         return Widget.MenuItem({
           onActivate: () => {

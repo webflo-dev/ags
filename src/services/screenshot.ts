@@ -20,7 +20,9 @@ function notify(fileName: string) {
         Utils.execAsync(`imv ${fileName}`);
       },
       Edit: () => {
-        Utils.execAsync(`swappy -f ${fileName}`);
+        Utils.execAsync(
+          `satty --filename ${fileName} --output-filename ${fileName.replace("screenshot_", "satty_")}`
+        );
       },
       Delete: () => {
         Utils.execAsync(`rm ${fileName}`);

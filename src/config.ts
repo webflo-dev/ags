@@ -6,7 +6,10 @@ import { AppLauncher } from "@modules/app-launcher";
 import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
 import { VolumeOSD } from "@modules/osd";
 import { NotificationCenter } from "@modules/notification-center";
-import { Screenshot as ScreenshotService } from "@services";
+import {
+  Screenshot as ScreenshotService,
+  Screenrecord as ScreenrecordService,
+} from "@services";
 
 async function start() {
   // const notifications = await Service.import("notifications");
@@ -36,7 +39,7 @@ async function start() {
   globalThis.ags = { App };
   globalThis.powermenu = { toggle: togglePowerMenu };
   globalThis.screenshot = ScreenshotService;
-  // globalThis.screenrecord = ScreenrecordService;
+  globalThis.screenrecord = ScreenrecordService;
 }
 
 const agsVersion = readFile(App.configDir + "/ags-version.txt");

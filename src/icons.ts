@@ -9,6 +9,7 @@ export default {
     wayland: "_wayland-symbolic",
   },
   camera: "_camera-symbolic",
+  video: "_video-symbolic",
   microphone: {
     muted: "_microphone-slash-symbolic",
     unmuted: "_microphone-symbolic",

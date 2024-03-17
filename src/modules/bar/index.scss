@@ -75,7 +75,7 @@
   }
 
   #systray {
-    @include module;
+    @include module($color_light);
     font-size: 1.5rem;
   }
 
@@ -177,5 +177,15 @@
 
   #screenshot-indicator {
     @include module($color_dark, $color_dark, $color_orange);
+  }
+
+  #screen-record-indicator {
+    &.selection {
+      @include module($color_dark, $color_dark, $color_orange);
+    }
+
+    &.recording {
+      @include module($color_light, null, $color_red);
+    }
   }
 }
