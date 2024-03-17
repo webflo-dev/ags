@@ -15,15 +15,11 @@
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      // "@types/*": ["./types/*"],
       "@services": ["./src/services/index.ts"],
       "@modules/*": ["./src/modules/*"],
-      // "@icons": ["./src/icons.ts"],
       "@utils": ["./src/utils.ts"],
       "@widgets": ["./src/widgets/index.ts"],
       "@icons": ["./src/icons.ts"]
     }
   }
-  //"include": ["./src/**/*.ts*"]
-  // "include": ["./src/**/*.ts*", "./types/**/ags.d.ts"]
 }

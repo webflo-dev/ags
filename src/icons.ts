@@ -3,7 +3,13 @@ export default {
   ui: {
     check: "_check-symbolic",
     close: "window-close-symbolic",
+    fullscreen: "_fullscreen-symbolic",
+    pinned: "_pinned-symbolic",
+    floatingWindow: "_window-floating-symbolic",
+    wayland: "_wayland-symbolic",
   },
+  camera: "_camera-symbolic",
+  video: "_video-symbolic",
   microphone: {
     muted: "_microphone-slash-symbolic",
     unmuted: "_microphone-symbolic",

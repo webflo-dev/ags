@@ -5,12 +5,25 @@ import { Systray } from "./systray";
 import { Audio } from "./audio";
 import { NotificationIndicator } from "./notification-indicator";
 import { Battery } from "./battery";
+import { Mpris } from "./mpris";
+import { ClientIndicator } from "./client-indicator";
+import { ScreenshotIndicator } from "./screenshot-indicator";
+import { ScreenrecordIndicator } from "./screen-record-indicator";
 
 const StartWidget = () =>
   Widget.Box({
     className: "left",
     spacing: 8,
-    children: [Workspaces() /*, Mpris()*/],
+    children: [
+      Workspaces(),
+      ClientIndicator(),
+      Mpris(),
+      Widget.Box({
+        hpack: "end",
+        hexpand: true,
+        children: [ScreenshotIndicator(), ScreenrecordIndicator()],
+      }),
+    ],
   });
 
 const CenterWidget = () =>
@@ -18,13 +31,7 @@ const CenterWidget = () =>
     spacing: 8,
     className: "middle",
     hpack: "center",
-    children: [
-      DateTime(),
-      // Date(),
-      // Time(),
-      // ScreenrecordIndicator(),
-      // ScreenshotIndicator(),
-    ],
+    children: [DateTime()],
   });
 
 const EndWidget = () =>
