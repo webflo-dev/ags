@@ -160,17 +160,15 @@
   #client-indicator {
     @include module;
 
+    &.xwayland {
+      border-color: $color_red;
+    }
+
     image.indicator {
       color: $color_gray;
 
       &.active {
         color: $color_orange;
-      }
-
-      &.xwayland {
-        padding: 3px;
-        border-radius: 50%;
-        background-color: $color_blue;
       }
     }
   }

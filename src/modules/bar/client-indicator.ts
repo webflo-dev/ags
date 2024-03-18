@@ -13,33 +13,29 @@ export function ClientIndicator() {
   const fullscreen = Indicator(icons.ui.fullscreen, "fullscreen");
   const pinned = Indicator(icons.ui.pinned, "pinned");
   const floating = Indicator(icons.ui.floatingWindow, "floating");
-  const xwayland = Indicator(icons.ui.wayland, "xwayland");
 
   return Widget.Box({
     name: "client-indicator",
     spacing: 8,
-    children: [fullscreen, floating, pinned, xwayland],
+    children: [fullscreen, floating, pinned],
   })
-    .hook(hyprland.active.client, () => {
-      const client = hyprland.clients.find((client) =>
-        client.address.endsWith(hyprland.active.client.address)
-      );
+    .hook(hyprland.active.client, (self) => {
+      const client = hyprland.getClient(hyprland.active.client.address);
       if (!client) return;
+
+      self.toggleClassName("xwayland", client.xwayland);
+
       fullscreen.toggleClassName("active", client.fullscreen);
       floating.toggleClassName("active", client.floating);
       pinned.toggleClassName("active", client.pinned);
-      xwayland.visible = client.xwayland;
     })
     .hook(
       hyprland,
-      (_, name: string, data: string) => {
-        // console.log(`IPC => ${name} => ${JSON.stringify(data, null, 2)}`);
+      (self, name: string, data: string) => {
         switch (name) {
           case "fullscreen":
             {
-              const client = hyprland.clients.find((client) =>
-                client.address.endsWith(hyprland.active.client.address)
-              );
+              const client = hyprland.getClient(hyprland.active.client.address);
               if (!client) return;
               fullscreen.toggleClassName("active", data === "1");
             }
@@ -47,9 +43,7 @@ export function ClientIndicator() {
           case "changefloatingmode":
             {
               const [address, mode] = data.split(",");
-              const client = hyprland.clients.find((client) =>
-                client.address.endsWith(address)
-              );
+              const client = hyprland.getClient(`0x${address}`);
               if (!client) return;
               floating.toggleClassName("active", mode === "1");
             }
