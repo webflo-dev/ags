@@ -4,10 +4,6 @@ window {
   background: transparent;
 }
 
-button {
-  all: unset;
-}
-
 label {
   font-family: "system-ui";
   font-size: 16px;
@@ -28,3 +24,4 @@ label {
 @import "../src/modules/power-menu";
 @import "../src/modules/osd";
 @import "../src/modules/notification-center";
+@import "../src/modules/settings";

@@ -9,13 +9,13 @@ function Indicator(icon: string, className: string) {
   });
 }
 
-export function ClientIndicator() {
+export function ClientState() {
   const fullscreen = Indicator(icons.ui.fullscreen, "fullscreen");
   const pinned = Indicator(icons.ui.pinned, "pinned");
   const floating = Indicator(icons.ui.floatingWindow, "floating");
 
   return Widget.Box({
-    name: "client-indicator",
+    name: "client-state",
     spacing: 8,
     children: [fullscreen, floating, pinned],
   })

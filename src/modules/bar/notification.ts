@@ -1,15 +1,15 @@
 import icons from "@icons";
 import { clsx } from "clsx";
-import type { Notification } from "types/service/notifications";
+import type { Notification as Notif } from "types/service/notifications";
 
 const notifications = await Service.import("notifications");
 
-function AppIcon({ app_icon, app_entry }: Notification) {
+function AppIcon({ app_icon, app_entry }: Notif) {
   if (Utils.lookUpIcon(app_icon)) return app_icon;
   if (Utils.lookUpIcon(app_entry)) return app_entry;
 }
 
-export function NotificationIndicator() {
+export function Notification() {
   const _dnd = notifications.bind("dnd");
   const _notifications = notifications.bind("notifications");
 
@@ -17,7 +17,7 @@ export function NotificationIndicator() {
   const messageLabel = Widget.Label();
 
   return Widget.Box({
-    name: "notification-indicator",
+    name: "notification",
     className: Utils.merge([_dnd, _notifications], (dnd, notifications) =>
       clsx({
         dnd: dnd,
