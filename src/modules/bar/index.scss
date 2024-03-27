@@ -20,9 +20,18 @@
 }
 
 #bar {
+  button {
+    all: unset;
+  }
+
   #date-time {
     @include module;
 
+    .date {
+      label {
+        color: $color_light_gray;
+      }
+    }
     .time {
       font-weight: bold;
     }
@@ -98,7 +107,7 @@
     }
   }
 
-  #notification-indicator {
+  #notification {
     button {
       @include module;
     }
@@ -157,7 +166,7 @@
     }
   }
 
-  #client-indicator {
+  #client-state {
     @include module;
 
     &.xwayland {
@@ -173,17 +182,38 @@
     }
   }
 
-  #screenshot-indicator {
+  #screenshot {
     @include module($color_dark, $color_dark, $color_orange);
   }
 
-  #screen-record-indicator {
+  #screen-record {
     &.selection {
       @include module($color_dark, $color_dark, $color_orange);
     }
 
     &.recording {
       @include module($color_light, null, $color_red);
+    }
+  }
+
+  #mpris {
+    @include module;
+
+    .player {
+      .title {
+        color: $color_light_gray;
+      }
+      .artists {
+        font-weight: bold;
+      }
+
+      button image {
+        color: $color_light_gray;
+
+        &.play-pause {
+          color: $color_light;
+        }
+      }
     }
   }
 }

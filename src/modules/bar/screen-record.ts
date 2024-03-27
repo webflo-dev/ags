@@ -1,4 +1,4 @@
-import { Screenrecord } from "@services";
+import { Screenrecord as ScreenrecordService } from "@services";
 import icons from "@icons";
 
 function humanReadableTimer(timer: number) {
@@ -7,13 +7,13 @@ function humanReadableTimer(timer: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export function ScreenrecordIndicator() {
+export function Screenrecord() {
   const label = Widget.Label();
 
   return Widget.Button({
-    name: "screen-record-indicator",
+    name: "screen-record",
     onClicked: () => {
-      Screenrecord.stop();
+      ScreenrecordService.stop();
     },
     child: Widget.Box({
       spacing: 8,
@@ -24,8 +24,8 @@ export function ScreenrecordIndicator() {
         label,
       ],
     }),
-  }).hook(Screenrecord, (self) => {
-    const { recording, timer, action } = Screenrecord.value;
+  }).hook(ScreenrecordService, (self) => {
+    const { recording, timer, action } = ScreenrecordService.value;
 
     self.class_name = action || "";
 

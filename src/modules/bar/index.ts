@@ -3,12 +3,12 @@ import { Workspaces } from "./workspace";
 import { SystemInfo } from "./system-info";
 import { Systray } from "./systray";
 import { Audio } from "./audio";
-import { NotificationIndicator } from "./notification-indicator";
+import { Notification } from "./notification";
 import { Battery } from "./battery";
 import { Mpris } from "./mpris";
-import { ClientIndicator } from "./client-indicator";
-import { ScreenshotIndicator } from "./screenshot-indicator";
-import { ScreenrecordIndicator } from "./screen-record-indicator";
+import { ClientState } from "./client-state";
+import { Screenshot } from "./screenshot";
+import { Screenrecord } from "./screen-record";
 
 const StartWidget = () =>
   Widget.Box({
@@ -16,22 +16,32 @@ const StartWidget = () =>
     spacing: 8,
     children: [
       Workspaces(),
-      ClientIndicator(),
+      ClientState(),
       Mpris(),
       Widget.Box({
         hpack: "end",
         hexpand: true,
-        children: [ScreenshotIndicator(), ScreenrecordIndicator()],
+        children: [Screenshot(), Screenrecord()],
       }),
     ],
   });
+
+function Settings() {
+  return Widget.Button({
+    className: "settings",
+    child: Widget.Icon("emblem-system-symbolic"),
+    onClicked: () => {
+      App.toggleWindow("settings-dialog");
+    },
+  });
+}
 
 const CenterWidget = () =>
   Widget.Box({
     spacing: 8,
     className: "middle",
     hpack: "center",
-    children: [DateTime()],
+    children: [Settings(), DateTime()],
   });
 
 const EndWidget = () =>
@@ -39,7 +49,7 @@ const EndWidget = () =>
     className: "right",
     spacing: 8,
     children: [
-      NotificationIndicator(),
+      Notification(),
       Widget.Box({
         hpack: "end",
         hexpand: true,

@@ -18,36 +18,39 @@ $radius: 8px;
   .header {
     margin: 1.1rem 1rem;
 
-    .dnd {
-      background-color: $color_light_gray;
-      color: $bg_color;
-      border-radius: 12px;
-      padding: 0.5rem;
-      label {
-        color: $bg_color;
-      }
-      &:hover {
-        background-color: $fg_color;
-      }
-
-      &.on {
-        color: $bg_color;
-        background-color: $accent;
-      }
+    .title {
+      font-weight: bold;
     }
+    // .dnd {
+    //   background-color: $color_light_gray;
+    //   color: $bg_color;
+    //   border-radius: 12px;
+    //   padding: 0.5rem;
+    //   label {
+    //     color: $bg_color;
+    //   }
+    //   &:hover {
+    //     background-color: $fg_color;
+    //   }
 
-    .clear {
-      background-color: $color_light_gray;
-      color: $bg_color;
-      border-radius: 12px;
-      padding: 0.5rem;
-      label {
-        color: $bg_color;
-      }
-      &:hover {
-        background-color: $fg_color;
-      }
-    }
+    //   &.on {
+    //     color: $bg_color;
+    //     background-color: $accent;
+    //   }
+    // }
+
+    // .clear {
+    //   background-color: $color_light_gray;
+    //   color: $bg_color;
+    //   border-radius: 12px;
+    //   padding: 0.5rem;
+    //   label {
+    //     color: $bg_color;
+    //   }
+    //   &:hover {
+    //     background-color: $fg_color;
+    //   }
+    // }
   }
 
   .notification {

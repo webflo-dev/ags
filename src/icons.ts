@@ -59,4 +59,11 @@ export default {
     reboot: "_reboot-symbolic",
     shutdown: "_power-off-symbolic",
   },
+  mpris: {
+    default: "_music-symbolic",
+    play: "_play-symbolic",
+    pause: "_pause-symbolic",
+    previous: "_previous-symbolic",
+    next: "_next-symbolic",
+  },
 };

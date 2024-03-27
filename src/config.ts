@@ -6,6 +6,8 @@ import { AppLauncher } from "@modules/app-launcher";
 import { PowerMenu, togglePowerMenu } from "@modules/power-menu";
 import { VolumeOSD } from "@modules/osd";
 import { NotificationCenter } from "@modules/notification-center";
+import { Settings } from "@modules/settings";
+
 import {
   Screenshot as ScreenshotService,
   Screenrecord as ScreenrecordService,
@@ -33,6 +35,7 @@ async function start() {
       PowerMenu(),
       VolumeOSD(),
       NotificationCenter(),
+      Settings(),
     ],
   });
   // Use for CLI calls

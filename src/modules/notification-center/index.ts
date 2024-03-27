@@ -1,4 +1,5 @@
 import GLib from "gi://GLib";
+// import Gtk from "gi://Gtk?version=3.0";
 import { PopupWindow } from "@widgets";
 import icons from "@icons";
 import { type Notification as Notif } from "types/service/notifications";
@@ -13,20 +14,41 @@ function time(time: number, format = "%H:%M") {
 }
 
 function Header() {
-  const dndButton = Widget.Button({
+  // const dndButton = Widget.Button({
+  //   className: "dnd",
+  //   child: Widget.Icon(),
+  //   onClicked: () => (notifications.dnd = !notifications.dnd),
+  // }).hook(
+  //   notifications,
+  //   (self) => {
+  //     self.child.icon = notifications.dnd
+  //       ? icons.notifications.dnd.enabled
+  //       : icons.notifications.dnd.disabled;
+  //     self.toggleClassName("on", notifications.dnd);
+  //   },
+  //   "notify::dnd"
+  // );
+
+  const dndButton = Widget.Box({
     className: "dnd",
-    child: Widget.Icon(),
-    onClicked: () => (notifications.dnd = !notifications.dnd),
-  }).hook(
-    notifications,
-    (self) => {
-      self.child.icon = notifications.dnd
-        ? icons.notifications.dnd.enabled
-        : icons.notifications.dnd.disabled;
-      self.toggleClassName("on", notifications.dnd);
-    },
-    "notify::dnd"
-  );
+    children: [
+      Widget.Switch({
+        onActivate: ({ active }) => {
+          notifications.dnd = active;
+        },
+      }).hook(
+        notifications,
+        (self) => {
+          self.active = notifications.dnd;
+        },
+        "notify::dnd"
+      ),
+      Widget.Icon({
+        icon: icons.notifications.dnd.enabled,
+        size: 24,
+      }),
+    ],
+  });
 
   return Widget.CenterBox({
     className: "header",
@@ -58,6 +80,48 @@ function Header() {
       }),
     }),
   });
+
+  // const clearBtn = Widget.Button({
+  //   className: "clear",
+  //   visible: _notifications.as((n) => n.length > 0),
+  //   child: Widget.Box({
+  //     spacing: 8,
+  //     children: [
+  //       Widget.Icon({ icon: icons.notifications.clear }),
+  //       Widget.Label({
+  //         label: "Clear",
+  //       }),
+  //     ],
+  //   }),
+  //   onPrimaryClick: () => notifications.clear(),
+  // });
+  // const dndSwitch = Widget.Box({
+  //   children: [
+  //     Widget.Switch({
+  //       className: "dnd",
+  //       onActivate: ({ active }) => {
+  //         notifications.dnd = active;
+  //       },
+  //     }).hook(
+  //       notifications,
+  //       (self) => {
+  //         self.active = notifications.dnd;
+  //       },
+  //       "notify::dnd"
+  //     ),
+  //     Widget.Label({
+  //       label: "Dot Not Disturb",
+  //       vpack: "fill",
+  //       xalign: 0,
+  //     }),
+  //   ],
+  // });
+  // const toolbar = new Gtk.HeaderBar({
+  //   title: "Notifications",
+  // });
+  // toolbar.pack_start(dndSwitch);
+  // toolbar.pack_end(clearBtn);
+  // return toolbar;
 }
 
 function NotificationIcon({ app_entry, app_icon, image }: Notif) {

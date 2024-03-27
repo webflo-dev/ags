@@ -2,7 +2,7 @@
 
 ## TODO
 
-- [ ] Current mpris player in top bar
+- [x] Current mpris player in top bar
 - [ ] Show mpris players when click on players button in top bar
 - [ ] Rework client indicator?
 - [x] Screenshot service + indicators in top bar

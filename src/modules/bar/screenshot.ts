@@ -1,11 +1,11 @@
-import { Screenshot } from "@services";
+import { Screenshot as ScreenshotService } from "@services";
 import icons from "@icons";
 
-export function ScreenshotIndicator() {
+export function Screenshot() {
   return Widget.Box({
-    name: "screenshot-indicator",
+    name: "screenshot",
     spacing: 8,
-    visible: Screenshot.bind().as(({ busy }) => busy),
+    visible: ScreenshotService.bind().as(({ busy }) => busy),
     children: [
       Widget.Icon({
         icon: icons.camera,

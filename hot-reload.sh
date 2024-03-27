@@ -6,10 +6,10 @@ CONF_FILE="config.js"
 INSPECTOR=$([ "$1" == "-i" ] && echo " --inspector " || echo "")
 
 function build_js() {
-  npm run build:js
+  npm run --silent build:js
 }
 function build_css() {
-  npm run build:css
+  npm run --silent build:css
 }
 
 function reload_css() {
@@ -18,6 +18,8 @@ function reload_css() {
 
 function reload_ags() {
   pkill ags
+  # pkill bash
+  # pkill wf-recorder
   ags $INSPECTOR -c $WORKDIR/$CONF_FILE &
 }
 
@@ -29,10 +31,6 @@ reload_ags
 inotifywait --quiet --monitor --event create,modify,delete --recursive $WORKDIR | while read DIRECTORY EVENT FILE; do
   file_extension=${FILE##*.}
   case $file_extension in
-    js)
-		echo "reload JS..."
-    reload_ags
-    ;;
   ts )
     echo "reload TS..."
     build_js
