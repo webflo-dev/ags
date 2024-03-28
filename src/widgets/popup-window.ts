@@ -1,164 +1,149 @@
-import { type WindowProps } from "types/widgets/window";
-import type Gtk from "gi://Gtk?version=3.0";
-import { Padding } from "./padding";
+import Gtk from "gi://Gtk?version=3.0";
+import { BoxProps } from "types/widgets/box";
+import { RevealerProps } from "types/widgets/revealer";
 
-type PopupWindowProps = Omit<WindowProps, "name"> & {
-  name: string;
-  layout?: keyof ReturnType<typeof Layout>;
+type Placement =
+  | "top-left"
+  | "top-center"
+  | "top-right"
+  | "middle-left"
+  | "center"
+  | "middle-right"
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right";
+
+type VoidFunction = () => void;
+
+const placementTransistion: Record<Placement, RevealerProps["transition"]> = {
+  "top-left": "slide_down",
+  "top-center": "slide_down",
+  "top-right": "slide_down",
+  "middle-left": "slide_right",
+  center: "crossfade",
+  "middle-right": "slide_left",
+  "bottom-left": "slide_up",
+  "bottom-center": "slide_up",
+  "bottom-right": "slide_up",
 };
 
-// const PopupRevealer = (
-//   name: string,
-//   child: Child,
-//   transition: Transition = "slide_down"
-// ) =>
-//   Widget.Box(
-//     { css: "padding: 1px;" },
-//     Widget.Revealer({
-//       transition,
-//       child: Widget.Box({
-//         class_name: "window-content",
-//         child,
-//       }),
-//       // transitionDuration: options.transition.bind(),
-//       setup: (self) =>
-//         self.hook(App, (_, wname, visible) => {
-//           if (wname === name) self.reveal_child = visible;
-//         }),
-//     })
-//   );
+const hpack: Record<Placement, "start" | "center" | "end"> = {
+  "top-left": "start",
+  "top-center": "center",
+  "top-right": "end",
+  "middle-left": "start",
+  center: "center",
+  "middle-right": "end",
+  "bottom-left": "start",
+  "bottom-center": "center",
+  "bottom-right": "end",
+};
 
-const Layout = (name: string, child: Gtk.Widget) => ({
-  center: () =>
-    Widget.CenterBox(
-      {},
-      Padding(name),
-      Widget.CenterBox(
-        { vertical: true },
-        Padding(name),
-        child,
-        // PopupRevealer(name, child, transition),
-        Padding(name)
-      ),
-      Padding(name)
-    ),
-  top: () =>
-    Widget.CenterBox(
-      {},
-      Padding(name),
-      Widget.Box(
-        { vertical: true },
-        child,
-        // PopupRevealer(name, child, transition),
-        Padding(name)
-      ),
-      Padding(name)
-    ),
-  "top-right": () =>
-    Widget.Box(
-      {},
-      Padding(name),
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        child,
-        // PopupRevealer(name, child, transition),
-        Padding(name)
-      )
-    ),
-  "top-center": () =>
-    Widget.Box(
-      {},
-      Padding(name),
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        child,
-        // PopupRevealer(name, child, transition),
-        Padding(name)
-      ),
-      Padding(name)
-    ),
-  "top-left": () =>
-    Widget.Box(
-      {},
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        child,
-        // PopupRevealer(name, child, transition),
-        Padding(name)
-      ),
-      Padding(name)
-    ),
-  "bottom-left": () =>
-    Widget.Box(
-      {},
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        Padding(name),
-        child
-        // PopupRevealer(name, child, transition)
-      ),
-      Padding(name)
-    ),
-  "bottom-center": () =>
-    Widget.Box(
-      {},
-      Padding(name),
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        Padding(name),
-        child
-        // PopupRevealer(name, child, transition)
-      ),
-      Padding(name)
-    ),
-  "bottom-right": () =>
-    Widget.Box(
-      {},
-      Padding(name),
-      Widget.Box(
-        {
-          hexpand: false,
-          vertical: true,
-        },
-        Padding(name),
-        child
-        // PopupRevealer(name, child, transition)
-      )
-    ),
-});
+type PopupRevealerRevealerProps = {
+  name: string;
+  placement: Placement;
+  child: BoxProps["child"];
+};
 
-export function PopupWindow({
-  name,
-  child,
-  layout = "center",
-  exclusivity = "ignore",
-  ...props
-}: PopupWindowProps) {
-  return Widget.Window<Gtk.Widget>({
+function PopupRevealer({ child, name, placement }: PopupRevealerRevealerProps) {
+  return Widget.Revealer({
+    transition: placementTransistion[placement],
+    child: Widget.Box({
+      // css: "* { border: 1px solid blue;}",
+      hexpand: false,
+      vexpand: false,
+      child,
+    }),
+    setup: (self) =>
+      self.hook(App, (_, wname, visible) => {
+        if (wname === name) self.reveal_child = visible;
+      }),
+  });
+}
+
+function Closer(onClose: VoidFunction) {
+  return (match: boolean = true) =>
+    Widget.EventBox({
+      // css: "* { border: 1px solid cyan;}",
+      hexpand: true,
+      vexpand: !match,
+      canFocus: false,
+      onPrimaryClick: onClose,
+      onMiddleClick: onClose,
+      onSecondaryClick: onClose,
+    });
+}
+
+type SlotProps = {
+  child: PopupWindowProps["child"];
+  name: string;
+  placement: Placement;
+};
+function Slot({ child, name, placement }: SlotProps) {
+  const closer = Closer(() => App.closeWindow(name));
+  const _child = PopupRevealer({ child, name, placement });
+
+  let children: Gtk.Widget[] = [];
+
+  switch (hpack[placement]) {
+    case "center":
+      children = [closer(), _child, closer()];
+      break;
+    case "start":
+      children = [_child, closer()];
+      break;
+    case "end":
+      children = [closer(), _child];
+      break;
+  }
+
+  return (requestPlacement: Placement) =>
+    requestPlacement === placement ? Widget.Box({ children }) : closer(false);
+}
+
+type PopupWindowProps = {
+  name: string;
+  placement: Placement;
+  child: RevealerProps["child"];
+};
+export function PopupWindow({ child, name, placement }: PopupWindowProps) {
+  const slot = Slot({ child, name, placement });
+
+  return Widget.Window({
     name,
-    class_names: [name, "popup-window"],
-    setup: (w) => w.keybind("Escape", () => App.closeWindow(name)),
-    visible: false,
     keymode: "on-demand",
-    exclusivity,
+    classNames: [name, "popup-window"],
+    setup: (w) => {
+      w.keybind("Escape", () => {
+        App.closeWindow(name);
+      });
+    },
+    visible: false,
     layer: "top",
     anchor: ["top", "bottom", "right", "left"],
-    child: Layout(name, Widget.Box({ child }))[layout](),
-    ...props,
+    child: Widget.Box({
+      children: [
+        Widget.Box({
+          vertical: true,
+          children: [
+            slot("top-left"),
+            slot("middle-left"),
+            slot("bottom-left"),
+          ],
+        }),
+        Widget.Box({
+          vertical: true,
+          children: [slot("top-center"), slot("center"), slot("bottom-center")],
+        }),
+        Widget.Box({
+          vertical: true,
+          children: [
+            slot("top-right"),
+            slot("middle-right"),
+            slot("bottom-right"),
+          ],
+        }),
+      ],
+    }),
   });
 }

@@ -15,10 +15,6 @@ label {
   font-family: "monospace";
 }
 
-.monospace {
-  @include font-monospace;
-}
-
 @import "../src/modules/bar";
 @import "../src/modules/app-launcher";
 @import "../src/modules/power-menu";

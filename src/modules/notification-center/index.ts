@@ -76,7 +76,10 @@ function Header() {
             }),
           ],
         }),
-        onPrimaryClick: () => notifications.clear(),
+        onPrimaryClick: () => {
+          notifications.clear();
+          App.closeWindow(WINDOW_NAME);
+        },
       }),
     }),
   });
@@ -300,9 +303,10 @@ function _NotificationCenter() {
 
 export const NotificationCenter = () => {
   return PopupWindow({
-    exclusivity: "exclusive",
+    // exclusivity: "exclusive",
     name: WINDOW_NAME,
-    layout: "top-center",
+    // layout: "top-center",
+    placement: "top-center",
     child: _NotificationCenter(),
   });
 };

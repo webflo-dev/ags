@@ -87,7 +87,7 @@ const _Applauncher = () => {
 export const AppLauncher = () => {
   return PopupWindow({
     name: WINDOW_NAME,
-    layout: "center",
+    placement: "center",
     child: _Applauncher(),
   });
 };
